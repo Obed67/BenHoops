@@ -87,20 +87,16 @@ export const getBALTeams = getNBATeams;
 
 /**
  * Récupère une équipe spécifique par son ID
- * Utilise SSG avec force-cache pour pages statiques
+ * IMPORTANT: L'API gratuite ne supporte pas lookupteam correctement
+ * On utilise donc search_all_teams et on filtre par ID
  */
 export async function getTeamById(teamId: string): Promise<Team | null> {
   try {
-    const data = await fetchFromAPI<SportsDBTeamsResponse>(
-      `lookupteam.php?id=${teamId}`,
-      { cache: 'force-cache', tags: [`team-${teamId}`] } // SSG
-    );
+    // Récupérer toutes les équipes NBA et filtrer par ID
+    const teams = await getNBATeams();
+    const team = teams.find((t) => t.id === teamId);
 
-    if (!data.teams || data.teams.length === 0) {
-      return null;
-    }
-
-    return normalizeTeam(data.teams[0]);
+    return team || null;
   } catch (error) {
     console.error(`Error fetching team ${teamId}:`, error);
     return null;

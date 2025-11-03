@@ -54,33 +54,62 @@ export default async function TeamPage({ params }: TeamPageProps) {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <div
-        className="mb-12 rounded-lg p-12 text-center text-white"
-        style={{
-          background: `linear-gradient(135deg, ${team.primaryColor} 0%, ${team.secondaryColor} 100%)`,
-        }}
-      >
-        <div className="mb-4 flex items-center justify-center">
-          <Image
-            src={team.logo}
-            alt={`${team.name} logo`}
-            width={160}
-            height={160}
-            className="rounded-full object-contain"
-          />
-        </div>
-        <h1 className="mb-2 text-5xl font-bold md:text-6xl">{team.name}</h1>
-        <p className="mb-4 text-xl opacity-90">
-          {team.city}, {team.country}
-        </p>
-        {team.championships > 0 && (
-          <div className="flex items-center justify-center space-x-2 text-lg">
-            <Trophy className="h-6 w-6" />
-            <span>
-              {team.championships} {team.championships === 1 ? 'titre' : 'titres'}
-            </span>
+      {/* Hero Section avec fanart en arrière-plan */}
+      <div className="mb-12 rounded-lg overflow-hidden relative min-h-[400px] flex items-center justify-center">
+        {/* Image de fond (fanart ou banner) */}
+        {team.fanart && (
+          <div className="absolute inset-0">
+            <Image
+              src={team.fanart}
+              alt={`${team.name} background`}
+              fill
+              className="object-cover"
+              priority
+            />
+            {/* Overlay gradient pour lisibilité */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background: `linear-gradient(135deg, ${team.primaryColor}dd 0%, ${team.secondaryColor}dd 100%)`,
+              }}
+            />
           </div>
         )}
+        {!team.fanart && (
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(135deg, ${team.primaryColor} 0%, ${team.secondaryColor} 100%)`,
+            }}
+          />
+        )}
+
+        {/* Contenu du hero */}
+        <div className="relative z-10 text-center text-white p-12">
+          <div className="mb-4 flex items-center justify-center">
+            <div className="bg-white/10 backdrop-blur-md rounded-full p-6">
+              <Image
+                src={team.logo}
+                alt={`${team.name} logo`}
+                width={160}
+                height={160}
+                className="object-contain drop-shadow-2xl"
+              />
+            </div>
+          </div>
+          <h1 className="mb-2 text-5xl font-bold md:text-6xl drop-shadow-lg">{team.name}</h1>
+          <p className="mb-4 text-xl opacity-90">
+            {team.city}, {team.country}
+          </p>
+          {team.championships > 0 && (
+            <div className="flex items-center justify-center space-x-2 text-lg">
+              <Trophy className="h-6 w-6" />
+              <span>
+                {team.championships} {team.championships === 1 ? 'titre' : 'titres'}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="mb-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -132,6 +161,69 @@ export default async function TeamPage({ params }: TeamPageProps) {
           </CardContent>
         </Card>
       </div>
+
+      {/* Section Stade et Maillot */}
+      {(team.stadiumThumb || team.equipment) && (
+        <section className="mb-12">
+          <h2 className="mb-6 text-3xl font-bold">Installations</h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            {team.stadiumThumb && (
+              <Card className="overflow-hidden">
+                <div className="relative h-64">
+                  <Image
+                    src={team.stadiumThumb}
+                    alt={`${team.arena}`}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">{team.arena}</h3>
+                  <div className="flex items-center space-x-2 text-muted-foreground">
+                    <MapPin className="h-4 w-4" />
+                    <span>{team.city}</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-muted-foreground mt-1">
+                    <Users className="h-4 w-4" />
+                    <span>{team.capacity.toLocaleString()} places</span>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {team.equipment && (
+              <Card className="overflow-hidden">
+                <div className="relative h-64 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+                  <Image
+                    src={team.equipment}
+                    alt={`${team.name} maillot`}
+                    fill
+                    className="object-contain p-8"
+                  />
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">Maillot officiel</h3>
+                  <p className="text-muted-foreground">
+                    Équipement {team.founded && `depuis ${team.founded}`}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Section Description */}
+      {team.description && (
+        <section className="mb-12">
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">À propos de {team.name}</h2>
+              <p className="text-muted-foreground leading-relaxed">{team.description}</p>
+            </CardContent>
+          </Card>
+        </section>
+      )}
 
       <section className="mb-12">
         <h2 className="mb-6 text-3xl font-bold">Effectif</h2>
