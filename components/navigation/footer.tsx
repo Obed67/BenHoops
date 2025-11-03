@@ -27,7 +27,9 @@ export function Footer() {
 
           {/* Navigation */}
           <div>
-            <h3 className="mb-4 text-sm font-bold text-orange-600 dark:text-orange-500">Navigation</h3>
+            <h3 className="mb-4 text-sm font-bold text-orange-600 dark:text-orange-500">
+              Navigation
+            </h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
@@ -66,7 +68,9 @@ export function Footer() {
 
           {/* À propos */}
           <div>
-            <h3 className="mb-4 text-sm font-bold text-orange-600 dark:text-orange-500">À propos</h3>
+            <h3 className="mb-4 text-sm font-bold text-orange-600 dark:text-orange-500">
+              À propos
+            </h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <a
@@ -105,7 +109,9 @@ export function Footer() {
 
           {/* Réseaux sociaux */}
           <div>
-            <h3 className="mb-4 text-sm font-bold text-orange-600 dark:text-orange-500">Suivez-nous</h3>
+            <h3 className="mb-4 text-sm font-bold text-orange-600 dark:text-orange-500">
+              Suivez-nous
+            </h3>
             <div className="flex space-x-3">
               <a
                 href="#"
@@ -142,7 +148,11 @@ export function Footer() {
         {/* Copyright avec bordure orange */}
         <div className="mt-8 border-t border-orange-200/30 dark:border-orange-900/30 pt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            &copy; {currentYear} <span className="font-semibold text-orange-600 dark:text-orange-500">NBA Stats Hub</span>. Tous droits réservés.
+            &copy; {currentYear}{' '}
+            <span className="font-semibold text-orange-600 dark:text-orange-500">
+              NBA Stats Hub
+            </span>
+            . Tous droits réservés.
           </p>
         </div>
       </div>

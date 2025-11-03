@@ -26,7 +26,9 @@ export function Navbar() {
           <Link href="/" className="flex items-center space-x-2 group">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600 rounded-full blur-sm opacity-40 group-hover:opacity-60 transition-opacity"></div>
-              <div className="relative text-3xl transform group-hover:scale-110 transition-transform">🏀</div>
+              <div className="relative text-3xl transform group-hover:scale-110 transition-transform">
+                🏀
+              </div>
             </div>
             <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 dark:from-orange-500 dark:via-red-500 dark:to-orange-500 bg-clip-text text-transparent">
               NBA Stats
@@ -37,7 +39,7 @@ export function Navbar() {
           <div className="hidden items-center space-x-1 md:flex">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
-              
+
               return (
                 <Link
                   key={link.href}
@@ -56,22 +58,22 @@ export function Navbar() {
                 </Link>
               );
             })}
-            
-            <Link 
-              href="/search" 
+
+            <Link
+              href="/search"
               aria-label="Rechercher"
               className="ml-2 p-2 rounded-lg hover:bg-orange-500/10 dark:hover:bg-orange-500/10 transition-colors group"
             >
               <Search className="h-5 w-5 text-muted-foreground group-hover:text-orange-600 dark:group-hover:text-orange-500 transition-colors" />
             </Link>
-            
+
             <ThemeToggle />
           </div>
 
           {/* Mobile menu */}
           <div className="flex items-center space-x-2 md:hidden">
-            <Link 
-              href="/search" 
+            <Link
+              href="/search"
               aria-label="Rechercher"
               className="p-2 rounded-lg hover:bg-orange-500/10 transition-colors"
             >
@@ -83,7 +85,11 @@ export function Navbar() {
               className="p-2 rounded-lg hover:bg-orange-500/10 transition-colors"
               aria-label="Toggle menu"
             >
-              {isOpen ? <X className="h-6 w-6 text-muted-foreground" /> : <Menu className="h-6 w-6 text-muted-foreground" />}
+              {isOpen ? (
+                <X className="h-6 w-6 text-muted-foreground" />
+              ) : (
+                <Menu className="h-6 w-6 text-muted-foreground" />
+              )}
             </button>
           </div>
         </div>
@@ -94,7 +100,7 @@ export function Navbar() {
             <div className="flex flex-col space-y-1">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
-                
+
                 return (
                   <Link
                     key={link.href}
