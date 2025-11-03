@@ -1,18 +1,18 @@
 import { Metadata } from 'next';
-import { fetchTeams } from '@/lib/api/server';
+import { getNBATeams } from '@/lib/api/sportsdb';
 import { TeamCard } from '@/components/cards/team-card';
-import { REVALIDATE_TIME } from '@/lib/config/api';
 
 export const metadata: Metadata = {
   title: 'Équipes - NBA',
   description: 'Découvrez toutes les équipes de la NBA - 30 franchises professionnelles.',
 };
 
-// ISR - Revalidation toutes les 24 heures
-export const revalidate = REVALIDATE_TIME.teams;
+// ISR - Revalidation est configurée dans getNBATeams() (24h)
+// Pas besoin de définir `export const revalidate` ici
 
 export default async function TeamsPage() {
-  const teams = await fetchTeams();
+  // Fetch direct depuis le Server Component
+  const teams = await getNBATeams();
 
   return (
     <div className="container mx-auto px-4 py-12">

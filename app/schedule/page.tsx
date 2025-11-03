@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
-import { fetchMatches } from '@/lib/api/server';
-import { REVALIDATE_TIME } from '@/lib/config/api';
+import { getAllNBAMatches } from '@/lib/api/sportsdb';
 import { MatchCard } from '@/components/cards/match-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -9,11 +8,11 @@ export const metadata: Metadata = {
   description: 'Consultez tous les matchs passés et à venir de la NBA avec scores en direct.',
 };
 
-// ISR - Revalidation toutes les heures
-export const revalidate = REVALIDATE_TIME.matches;
+// ISR - Revalidation configurée dans getAllNBAMatches() (1h)
 
 export default async function SchedulePage() {
-  const matches = await fetchMatches();
+  // Fetch direct depuis Server Component
+  const matches = await getAllNBAMatches();
 
   const finishedMatches = matches.filter((m) => m.status === 'finished');
   const upcomingMatches = matches.filter((m) => m.status === 'scheduled');

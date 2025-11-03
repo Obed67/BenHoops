@@ -10,48 +10,49 @@ import {
 import { normalizeTeam, normalizePlayer, normalizeMatch } from './transformers';
 
 // ============================================
-// CLIENT HTTP GÉNÉRIQUE
+// HELPER FETCH OPTIMISÉ POUR NEXT.JS 14
 // ============================================
 
-class SportsDBClient {
-  private baseUrl: string;
-  private apiKey: string;
-
-  constructor() {
-    this.baseUrl = SPORTSDB_CONFIG.baseUrl;
-    this.apiKey = SPORTSDB_CONFIG.apiKey;
-  }
-
-  private getUrl(endpoint: string): string {
-    return `${this.baseUrl}/${this.apiKey}/${endpoint}`;
-  }
-
-  async fetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    const url = this.getUrl(endpoint);
-
-    try {
-      const response = await fetch(url, {
-        ...options,
-        headers: {
-          'Content-Type': 'application/json',
-          ...options?.headers,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      return data as T;
-    } catch (error) {
-      console.error(`Error fetching ${endpoint}:`, error);
-      throw error;
-    }
-  }
+/**
+ * Helper pour construire l'URL de l'API TheSportsDB
+ */
+function buildApiUrl(endpoint: string): string {
+  return `${SPORTSDB_CONFIG.baseUrl}/${SPORTSDB_CONFIG.apiKey}/${endpoint}`;
 }
 
-const client = new SportsDBClient();
+/**
+ * Fetch wrapper optimisé pour Next.js 14 Server Components
+ * Utilise les options de cache natives de Next.js
+ */
+async function fetchFromAPI<T>(
+  endpoint: string,
+  options?: {
+    revalidate?: number | false; // ISR: secondes avant revalidation
+    cache?: 'force-cache' | 'no-store'; // SSG ou SSR
+    tags?: string[]; // Pour revalidateTag
+  }
+): Promise<T> {
+  const url = buildApiUrl(endpoint);
+
+  try {
+    const response = await fetch(url, {
+      next: {
+        revalidate: options?.revalidate,
+        tags: options?.tags,
+      },
+      cache: options?.cache,
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(`Error fetching ${endpoint}:`, error);
+    throw error;
+  }
+}
 
 // ============================================
 // SERVICES API - ÉQUIPES
@@ -59,11 +60,15 @@ const client = new SportsDBClient();
 
 /**
  * Récupère toutes les équipes NBA
+ * Utilise ISR avec revalidation toutes les 24h (86400 secondes)
  */
 export async function getNBATeams(): Promise<Team[]> {
   try {
     const leagueName = encodeURIComponent(SPORTSDB_CONFIG.leagueName);
-    const data = await client.fetch<SportsDBTeamsResponse>(`search_all_teams.php?l=${leagueName}`);
+    const data = await fetchFromAPI<SportsDBTeamsResponse>(
+      `search_all_teams.php?l=${leagueName}`,
+      { revalidate: 86400, tags: ['nba-teams'] } // ISR: 24h
+    );
 
     if (!data.teams || data.teams.length === 0) {
       console.warn('Aucune équipe trouvée pour la NBA');
@@ -82,10 +87,14 @@ export const getBALTeams = getNBATeams;
 
 /**
  * Récupère une équipe spécifique par son ID
+ * Utilise SSG avec force-cache pour pages statiques
  */
 export async function getTeamById(teamId: string): Promise<Team | null> {
   try {
-    const data = await client.fetch<SportsDBTeamsResponse>(`lookupteam.php?id=${teamId}`);
+    const data = await fetchFromAPI<SportsDBTeamsResponse>(
+      `lookupteam.php?id=${teamId}`,
+      { cache: 'force-cache', tags: [`team-${teamId}`] } // SSG
+    );
 
     if (!data.teams || data.teams.length === 0) {
       return null;
@@ -104,10 +113,14 @@ export async function getTeamById(teamId: string): Promise<Team | null> {
 
 /**
  * Récupère tous les joueurs d'une équipe
+ * Utilise SSG pour pages statiques d'équipe
  */
 export async function getPlayersByTeam(teamId: string): Promise<Player[]> {
   try {
-    const data = await client.fetch<SportsDBPlayersResponse>(`lookup_all_players.php?id=${teamId}`);
+    const data = await fetchFromAPI<SportsDBPlayersResponse>(
+      `lookup_all_players.php?id=${teamId}`,
+      { cache: 'force-cache', tags: [`players-${teamId}`] } // SSG
+    );
 
     if (!data.player || data.player.length === 0) {
       console.warn(`Aucun joueur trouvé pour l'équipe ${teamId}`);
@@ -123,10 +136,14 @@ export async function getPlayersByTeam(teamId: string): Promise<Player[]> {
 
 /**
  * Récupère un joueur spécifique par son ID
+ * Utilise SSG pour pages statiques de joueur
  */
 export async function getPlayerById(playerId: string): Promise<Player | null> {
   try {
-    const data = await client.fetch<SportsDBPlayersResponse>(`lookupplayer.php?id=${playerId}`);
+    const data = await fetchFromAPI<SportsDBPlayersResponse>(
+      `lookupplayer.php?id=${playerId}`,
+      { cache: 'force-cache', tags: [`player-${playerId}`] } // SSG
+    );
 
     if (!data.player || data.player.length === 0) {
       return null;
@@ -145,25 +162,34 @@ export async function getPlayerById(playerId: string): Promise<Player | null> {
 
 /**
  * Récupère les matchs d'une équipe pour une saison
+ * Utilise ISR avec revalidation courte pour matchs récents
  */
 export async function getTeamMatches(teamId: string, season?: string): Promise<Match[]> {
   try {
-    const seasonParam = season || new Date().getFullYear().toString();
     const endpoint = `eventslast.php?id=${teamId}`;
 
-    const data = await client.fetch<SportsDBEventsResponse>(endpoint);
+    const [data, teams] = await Promise.all([
+      fetchFromAPI<SportsDBEventsResponse>(endpoint, {
+        revalidate: 3600,
+        tags: [`matches-${teamId}`],
+      }),
+      getNBATeams(),
+    ]);
 
     if (!data.events || data.events.length === 0) {
       console.warn(`Aucun match trouvé pour l'équipe ${teamId}`);
       return [];
     }
 
+    // Créer une map des équipes
+    const teamsMap = new Map(teams.map((team) => [team.id, { logo: team.logo }]));
+
     // Filtrer uniquement les matchs de basketball
     const basketballEvents = data.events.filter(
-      (event) => event.strSport === 'Basketball' || event.strLeague.includes('Basketball')
+      (event: any) => event.strSport === 'Basketball' || event.strLeague.includes('Basketball')
     );
 
-    return basketballEvents.map(normalizeMatch);
+    return basketballEvents.map((event) => normalizeMatch(event, teamsMap));
   } catch (error) {
     console.error(`Error fetching matches for team ${teamId}:`, error);
     return [];
@@ -172,23 +198,29 @@ export async function getTeamMatches(teamId: string, season?: string): Promise<M
 
 /**
  * Récupère les prochains matchs d'une ligue
+ * Utilise ISR avec revalidation fréquente
  */
 export async function getUpcomingMatches(leagueId?: string): Promise<Match[]> {
   try {
-    // Pour la BAL, on pourrait avoir besoin de l'ID de la ligue
-    // Si pas disponible, on retourne un tableau vide et on utilisera les matchs par équipe
     if (!leagueId) {
       console.warn('ID de ligue non fourni pour les prochains matchs');
       return [];
     }
 
-    const data = await client.fetch<SportsDBEventsResponse>(`eventsnextleague.php?id=${leagueId}`);
+    const [data, teams] = await Promise.all([
+      fetchFromAPI<SportsDBEventsResponse>(`eventsnextleague.php?id=${leagueId}`, {
+        revalidate: 1800,
+        tags: ['upcoming-matches'],
+      }),
+      getNBATeams(),
+    ]);
 
     if (!data.events || data.events.length === 0) {
       return [];
     }
 
-    return data.events.map(normalizeMatch);
+    const teamsMap = new Map(teams.map((team) => [team.id, { logo: team.logo }]));
+    return data.events.map((event) => normalizeMatch(event, teamsMap));
   } catch (error) {
     console.error('Error fetching upcoming matches:', error);
     return [];
@@ -197,6 +229,7 @@ export async function getUpcomingMatches(leagueId?: string): Promise<Match[]> {
 
 /**
  * Récupère les matchs passés d'une ligue
+ * Utilise ISR avec revalidation moyenne
  */
 export async function getPastMatches(leagueId?: string): Promise<Match[]> {
   try {
@@ -205,13 +238,20 @@ export async function getPastMatches(leagueId?: string): Promise<Match[]> {
       return [];
     }
 
-    const data = await client.fetch<SportsDBEventsResponse>(`eventspastleague.php?id=${leagueId}`);
+    const [data, teams] = await Promise.all([
+      fetchFromAPI<SportsDBEventsResponse>(`eventspastleague.php?id=${leagueId}`, {
+        revalidate: 3600,
+        tags: ['past-matches'],
+      }),
+      getNBATeams(),
+    ]);
 
     if (!data.events || data.events.length === 0) {
       return [];
     }
 
-    return data.events.map(normalizeMatch);
+    const teamsMap = new Map(teams.map((team) => [team.id, { logo: team.logo }]));
+    return data.events.map((event) => normalizeMatch(event, teamsMap));
   } catch (error) {
     console.error('Error fetching past matches:', error);
     return [];
@@ -220,25 +260,35 @@ export async function getPastMatches(leagueId?: string): Promise<Match[]> {
 
 /**
  * Récupère tous les matchs NBA (passés + à venir)
+ * Utilise ISR avec revalidation courte pour calendrier en direct
  */
 export async function getAllNBAMatches(season?: string): Promise<Match[]> {
   try {
     const leagueId = SPORTSDB_CONFIG.leagueId;
     const currentSeason = season || '2024-2025';
 
-    // Récupérer les matchs de la saison
-    const data = await client.fetch<SportsDBEventsResponse>(
-      `eventsseason.php?id=${leagueId}&s=${currentSeason}`
-    );
+    // Récupérer les matchs ET les équipes en parallèle
+    const [matchesData, teams] = await Promise.all([
+      fetchFromAPI<SportsDBEventsResponse>(`eventsseason.php?id=${leagueId}&s=${currentSeason}`, {
+        revalidate: 3600,
+        tags: ['all-matches', `season-${currentSeason}`],
+      }),
+      getNBATeams(),
+    ]);
 
-    if (!data.events || data.events.length === 0) {
+    if (!matchesData.events || matchesData.events.length === 0) {
       console.warn(`Aucun match trouvé pour la saison ${currentSeason}`);
       return [];
     }
 
-    // Filtrer uniquement les matchs de basketball et normaliser
-    const basketballMatches = data.events.filter((event) => event.strSport === 'Basketball');
-    return basketballMatches.map(normalizeMatch);
+    // Créer une map des équipes pour lookup rapide
+    const teamsMap = new Map(teams.map((team) => [team.id, { logo: team.logo }]));
+
+    // Filtrer uniquement les matchs de basketball et normaliser avec logos
+    const basketballMatches = matchesData.events.filter(
+      (event: any) => event.strSport === 'Basketball'
+    );
+    return basketballMatches.map((event) => normalizeMatch(event, teamsMap));
   } catch (error) {
     console.error('Error fetching all NBA matches:', error);
     return [];
@@ -277,18 +327,20 @@ export async function getTeamWithDetails(teamId: string) {
 
 /**
  * Recherche une ligue par nom et retourne son ID
+ * Utilise cache statique car les ligues changent rarement
  */
 export async function searchLeague(leagueName: string): Promise<string | null> {
   try {
-    const data = await client.fetch<{ leagues?: Array<{ idLeague: string; strLeague: string }> }>(
-      `search_all_leagues.php?s=${encodeURIComponent(SPORTSDB_CONFIG.sport)}`
+    const data = await fetchFromAPI<{ leagues?: Array<{ idLeague: string; strLeague: string }> }>(
+      `search_all_leagues.php?s=${encodeURIComponent(SPORTSDB_CONFIG.sport)}`,
+      { cache: 'force-cache', tags: ['leagues'] } // SSG
     );
 
     if (!data.leagues) {
       return null;
     }
 
-    const league = data.leagues.find((l) =>
+    const league = data.leagues.find((l: any) =>
       l.strLeague.toLowerCase().includes(leagueName.toLowerCase())
     );
 

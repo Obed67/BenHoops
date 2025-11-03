@@ -1,12 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import {
-  fetchTeams,
-  fetchTeamById,
-  fetchPlayersByTeam,
-  fetchMatchesByTeam,
-} from '@/lib/api/server';
-import { REVALIDATE_TIME } from '@/lib/config/api';
+import { getNBATeams, getTeamById, getPlayersByTeam, getTeamMatches } from '@/lib/api/sportsdb';
 import Image from 'next/image';
 import { PlayerCard } from '@/components/cards/player-card';
 import { MatchCard } from '@/components/cards/match-card';
@@ -19,11 +13,9 @@ interface TeamPageProps {
   };
 }
 
-// ISR - Revalidation toutes les 24 heures
-export const revalidate = REVALIDATE_TIME.teams;
-
+// generateMetadata pour SEO dynamique
 export async function generateMetadata({ params }: TeamPageProps): Promise<Metadata> {
-  const team = await fetchTeamById(params.id);
+  const team = await getTeamById(params.id);
 
   if (!team) {
     return {
@@ -37,18 +29,20 @@ export async function generateMetadata({ params }: TeamPageProps): Promise<Metad
   };
 }
 
+// SSG - Pré-générer les 30 pages d'équipes NBA
 export async function generateStaticParams() {
-  const teams = await fetchTeams();
+  const teams = await getNBATeams();
   return teams.map((team) => ({
     id: team.id,
   }));
 }
 
 export default async function TeamPage({ params }: TeamPageProps) {
+  // Fetch parallèle pour optimiser les performances
   const [team, teamPlayers, teamMatches] = await Promise.all([
-    fetchTeamById(params.id),
-    fetchPlayersByTeam(params.id),
-    fetchMatchesByTeam(params.id),
+    getTeamById(params.id),
+    getPlayersByTeam(params.id),
+    getTeamMatches(params.id),
   ]);
 
   if (!team) {

@@ -30,12 +30,17 @@ export function normalizeTeam(sportsDBTeam: SportsDBTeam): Team {
   return {
     id: sportsDBTeam.idTeam,
     name: sportsDBTeam.strTeam,
-    shortName: sportsDBTeam.strTeamShort,
+    shortName: sportsDBTeam.strTeamShort || sportsDBTeam.strTeam.substring(0, 3).toUpperCase(),
     city: sportsDBTeam.strStadiumLocation || sportsDBTeam.strCountry || 'Unknown',
     country: sportsDBTeam.strCountry || 'Unknown',
-    logo: sportsDBTeam.strTeamBadge || sportsDBTeam.strTeamLogo || '',
-    badge: sportsDBTeam.strTeamBadge,
-    banner: sportsDBTeam.strTeamBanner,
+    logo:
+      sportsDBTeam.strBadge ||
+      sportsDBTeam.strLogo ||
+      sportsDBTeam.strTeamBadge ||
+      sportsDBTeam.strTeamLogo ||
+      '',
+    badge: sportsDBTeam.strBadge || sportsDBTeam.strTeamBadge,
+    banner: sportsDBTeam.strBanner || sportsDBTeam.strTeamBanner,
     primaryColor: colors.primary,
     secondaryColor: colors.secondary,
     founded,
@@ -88,7 +93,10 @@ export function normalizePlayer(sportsDBPlayer: SportsDBPlayer): Player {
 }
 
 // Normaliser un événement/match TheSportsDB vers notre format
-export function normalizeMatch(sportsDBEvent: SportsDBEvent): Match {
+export function normalizeMatch(
+  sportsDBEvent: SportsDBEvent,
+  teamsMap?: Map<string, { logo: string }>
+): Match {
   const homeScore = sportsDBEvent.intHomeScore ? parseInt(sportsDBEvent.intHomeScore, 10) : null;
   const awayScore = sportsDBEvent.intAwayScore ? parseInt(sportsDBEvent.intAwayScore, 10) : null;
 
@@ -106,11 +114,15 @@ export function normalizeMatch(sportsDBEvent: SportsDBEvent): Match {
   const dateEvent = sportsDBEvent.dateEvent || new Date().toISOString().split('T')[0];
   const time = sportsDBEvent.strTime || sportsDBEvent.strTimeLocal || '20:00';
 
-  // Construct team logo URLs based on team IDs
-  // TheSportsDB provides team badges at: /images/media/team/badge/{teamId}.png
-  const baseLogoUrl = 'https://www.thesportsdb.com/images/media/team/badge';
-  const homeTeamLogo = `${baseLogoUrl}/${sportsDBEvent.idHomeTeam}.png`;
-  const awayTeamLogo = `${baseLogoUrl}/${sportsDBEvent.idAwayTeam}.png`;
+  // Récupérer les logos depuis la map des équipes ou utiliser placeholder
+  const homeTeamLogo =
+    teamsMap?.get(sportsDBEvent.idHomeTeam)?.logo ||
+    sportsDBEvent.strHomeTeamBadge ||
+    '/images/team-placeholder.png';
+  const awayTeamLogo =
+    teamsMap?.get(sportsDBEvent.idAwayTeam)?.logo ||
+    sportsDBEvent.strAwayTeamBadge ||
+    '/images/team-placeholder.png';
 
   return {
     id: sportsDBEvent.idEvent,

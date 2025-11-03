@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import { fetchStandings, fetchTeams } from '@/lib/api/server';
-import { REVALIDATE_TIME } from '@/lib/config/api';
+import { calculateStandings } from '@/lib/api/standings';
+import { getNBATeams } from '@/lib/api/sportsdb';
 import Image from 'next/image';
 import {
   Table,
@@ -17,11 +17,12 @@ export const metadata: Metadata = {
   description: 'Consultez le classement complet de la NBA avec statistiques détaillées.',
 };
 
-// ISR - Revalidation toutes les heures
-export const revalidate = REVALIDATE_TIME.standings;
+// ISR avec revalidation courte pour classement quasi temps-réel
+export const revalidate = 300; // 5 minutes
 
 export default async function StandingsPage() {
-  const [standings, teams] = await Promise.all([fetchStandings(), fetchTeams()]);
+  // Fetch parallèle pour données fréquemment mises à jour
+  const [standings, teams] = await Promise.all([calculateStandings(), getNBATeams()]);
 
   return (
     <div className="container mx-auto px-4 py-12">

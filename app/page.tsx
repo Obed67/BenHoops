@@ -1,28 +1,20 @@
 import Link from 'next/link';
-import { fetchMatches, fetchTeams, fetchPlayers } from '@/lib/api/server';
-import { REVALIDATE_TIME } from '@/lib/config/api';
+import { getAllNBAMatches, getNBATeams } from '@/lib/api/sportsdb';
 import { MatchCard } from '@/components/cards/match-card';
 import { TeamCard } from '@/components/cards/team-card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, TrendingUp, Users, Calendar } from 'lucide-react';
 
-// ISR - Revalidation toutes les heures
-export const revalidate = REVALIDATE_TIME.matches;
+// ISR - Revalidation toutes les 5 minutes pour la homepage
+export const revalidate = 300;
 
 export default async function Home() {
-  const [matches, teams, players] = await Promise.all([
-    fetchMatches(),
-    fetchTeams(),
-    fetchPlayers(),
-  ]);
+  // Fetch parallèle avec ISR
+  const [matches, teams] = await Promise.all([getAllNBAMatches(), getNBATeams()]);
 
   const recentMatches = matches.filter((m) => m.status === 'finished').slice(0, 3);
   const upcomingMatches = matches.filter((m) => m.status === 'scheduled').slice(0, 3);
   const featuredTeams = teams.slice(0, 4);
-  const topPlayers = players
-    .filter((p) => p.points !== undefined)
-    .sort((a, b) => (b.points || 0) - (a.points || 0))
-    .slice(0, 3);
 
   return (
     <div className="flex flex-col">
@@ -78,7 +70,7 @@ export default async function Home() {
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                 <TrendingUp className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-3xl font-bold">{players.length}+</h3>
+              <h3 className="text-3xl font-bold">500+</h3>
               <p className="text-muted-foreground">Joueurs professionnels</p>
             </div>
           </div>
@@ -138,35 +130,6 @@ export default async function Home() {
             {featuredTeams.map((team) => (
               <TeamCard key={team.id} team={team} />
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-t bg-muted/30 py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="mb-8 text-3xl font-bold">Meilleurs marqueurs</h2>
-          <div className="grid gap-4 md:grid-cols-3">
-            {topPlayers.map((player, index) => {
-              const team = teams.find((t) => t.id === player.teamId);
-              return (
-                <div
-                  key={player.id}
-                  className="flex items-center space-x-4 rounded-lg border bg-card p-4 transition-shadow hover:shadow-md"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-semibold">{player.name}</p>
-                    <p className="text-sm text-muted-foreground">{team?.name}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold">{player.points}</p>
-                    <p className="text-xs text-muted-foreground">PTS/match</p>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         </div>
       </section>

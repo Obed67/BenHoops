@@ -27,6 +27,9 @@ export interface SportsDBTeam {
   strDescriptionFR?: string;
   strGender?: string;
   strCountry?: string;
+  strBadge?: string; // Badge/logo de l'équipe
+  strLogo?: string; // Logo alternatif
+  strBanner?: string; // Bannière de l'équipe
   strTeamBadge?: string;
   strTeamJersey?: string;
   strTeamLogo?: string;
@@ -131,6 +134,11 @@ export interface SportsDBEvent {
   strStatus?: string;
   strPostponed: string;
   strLocked: string;
+  // Logos des équipes (ajoutés pour affichage)
+  strHomeTeamBadge?: string;
+  strAwayTeamBadge?: string;
+  strThumbHomeTeam?: string;
+  strThumbAwayTeam?: string;
 }
 
 export interface SportsDBTeamsResponse {
