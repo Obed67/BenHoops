@@ -12,20 +12,43 @@ export function TeamCard({ team }: TeamCardProps) {
   return (
     <Link href={`/teams/${team.id}`}>
       <Card className="group overflow-hidden transition-all hover:shadow-lg hover:scale-[1.02] duration-300">
-        <CardHeader
-          className="h-32 relative"
-          style={{
-            background: `linear-gradient(135deg, ${team.primaryColor} 0%, ${team.secondaryColor} 100%)`,
-          }}
-        >
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="opacity-90 transition-transform group-hover:scale-110 duration-300">
+        <CardHeader className="h-32 relative p-0">
+          {/* Image de fond (fanart ou gradient) */}
+          {team.fanart ? (
+            <div className="absolute inset-0">
+              <Image
+                src={team.fanart}
+                alt={`${team.name} background`}
+                fill
+                className="object-cover opacity-80"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+              {/* Overlay gradient pour lisibilité */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: `linear-gradient(135deg, ${team.primaryColor}dd 0%, ${team.secondaryColor}dd 100%)`,
+                }}
+              />
+            </div>
+          ) : (
+            <div
+              className="absolute inset-0"
+              style={{
+                background: `linear-gradient(135deg, ${team.primaryColor} 0%, ${team.secondaryColor} 100%)`,
+              }}
+            />
+          )}
+
+          {/* Logo de l'équipe */}
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <div className="opacity-90 transition-transform group-hover:scale-110 duration-300 bg-white/10 backdrop-blur-sm rounded-full p-4">
               <Image
                 src={team.logo}
                 alt={`${team.name} logo`}
-                width={96}
-                height={96}
-                className="object-contain"
+                width={80}
+                height={80}
+                className="object-contain drop-shadow-lg"
               />
             </div>
           </div>

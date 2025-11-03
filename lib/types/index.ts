@@ -40,6 +40,12 @@ export interface SportsDBTeam {
   strTeamBanner?: string;
   strYoutube?: string;
   strLocked: string;
+  // Images pour background
+  strFanart1?: string;
+  strFanart2?: string;
+  strFanart3?: string;
+  strFanart4?: string;
+  strEquipment?: string; // Maillot de l'équipe
 }
 
 export interface SportsDBPlayer {
@@ -134,7 +140,7 @@ export interface SportsDBEvent {
   strStatus?: string;
   strPostponed: string;
   strLocked: string;
-  // Logos des équipes (ajoutés pour affichage)
+  // Logos des équipes
   strHomeTeamBadge?: string;
   strAwayTeamBadge?: string;
   strThumbHomeTeam?: string;
@@ -166,6 +172,9 @@ export interface Team {
   logo: string;
   badge?: string;
   banner?: string;
+  fanart?: string; // Image de fond pour la card
+  equipment?: string; // Maillot (pour page détails)
+  stadiumThumb?: string; // Image du stade (pour page détails)
   primaryColor: string;
   secondaryColor: string;
   founded: number;

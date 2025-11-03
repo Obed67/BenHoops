@@ -41,6 +41,9 @@ export function normalizeTeam(sportsDBTeam: SportsDBTeam): Team {
       '',
     badge: sportsDBTeam.strBadge || sportsDBTeam.strTeamBadge,
     banner: sportsDBTeam.strBanner || sportsDBTeam.strTeamBanner,
+    fanart: sportsDBTeam.strFanart1 || sportsDBTeam.strBanner, // Image de fond (priorité fanart1)
+    equipment: sportsDBTeam.strEquipment, // Maillot
+    stadiumThumb: sportsDBTeam.strStadiumThumb, // Image du stade
     primaryColor: colors.primary,
     secondaryColor: colors.secondary,
     founded,
