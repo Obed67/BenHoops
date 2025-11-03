@@ -2,7 +2,7 @@
 
 export const SPORTSDB_CONFIG = {
   baseUrl: process.env.NEXT_PUBLIC_SPORTSDB_BASE_URL || 'https://www.thesportsdb.com/api/v1/json',
-  apiKey: process.env.NEXT_PUBLIC_SPORTSDB_API_KEY || '3', // '3' est la clé de test gratuite
+  apiKey: process.env.NEXT_PUBLIC_SPORTSDB_API_KEY || '123', // '123' est la clé gratuite qui fonctionne pour la NBA
   leagueId: '4387', // NBA League ID
   leagueName: 'NBA',
   sport: 'Basketball',

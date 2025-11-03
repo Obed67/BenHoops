@@ -89,7 +89,8 @@ export function normalizePlayer(sportsDBPlayer: SportsDBPlayer): Player {
     nationality: sportsDBPlayer.strNationality || 'Unknown',
     dateOfBirth: sportsDBPlayer.dateBorn,
     college: sportsDBPlayer.strCollege,
-    imageUrl: sportsDBPlayer.strThumb || sportsDBPlayer.strCutout,
+    // Priorité: render > cutout > thumb pour la meilleure qualité
+    imageUrl: sportsDBPlayer.strRender || sportsDBPlayer.strCutout || sportsDBPlayer.strThumb,
     cutout: sportsDBPlayer.strCutout,
     description: sportsDBPlayer.strDescriptionEN || sportsDBPlayer.strDescriptionFR,
   };
