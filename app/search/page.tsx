@@ -8,8 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SearchInput } from '@/components/search-input';
 
 export const metadata: Metadata = {
-  title: 'Recherche - Basketball Africa League',
-  description: 'Recherchez des équipes, joueurs et matchs de la BAL.',
+  title: 'Recherche - NBA Stats',
+  description: 'Recherchez des équipes, joueurs et matchs NBA.',
 };
 
 // ISR - Revalidation toutes les heures
@@ -70,7 +70,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           Recherche
         </h1>
         <p className="text-xl text-muted-foreground">
-          Recherchez des équipes, joueurs et matchs de la BAL
+          Recherchez des équipes, joueurs et matchs NBA
         </p>
       </div>
 

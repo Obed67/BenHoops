@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getBALTeams } from '@/lib/api/sportsdb';
+import { getNBATeams } from '@/lib/api/sportsdb';
 import { CACHE_HEADERS } from '@/lib/config/api';
 
 export const revalidate = 86400; // 24 heures - ISR
 
 export async function GET() {
   try {
-    const teams = await getBALTeams();
+    const teams = await getNBATeams();
 
     return NextResponse.json(
       { teams, count: teams.length },

@@ -5,8 +5,8 @@ import { MatchCard } from '@/components/cards/match-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export const metadata: Metadata = {
-  title: 'Calendrier - Basketball Africa League',
-  description: 'Consultez tous les matchs passés et à venir de la Basketball Africa League.',
+  title: 'Calendrier - NBA',
+  description: 'Consultez tous les matchs passés et à venir de la NBA avec scores en direct.',
 };
 
 // ISR - Revalidation toutes les heures

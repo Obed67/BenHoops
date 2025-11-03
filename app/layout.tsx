@@ -13,32 +13,28 @@ const bebasNeue = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
-  title: 'African Basketball League - ABL',
+  title: 'NBA Stats & Scores - Live Basketball',
   description:
-    'La première ligue professionnelle de basketball en Afrique. Suivez les résultats, classements et statistiques des meilleures équipes du continent.',
+    'Suivez la NBA en direct. Résultats, classements, statistiques et actualités des 30 équipes NBA. Scores en temps réel et calendrier complet.',
   keywords: [
+    'NBA',
     'basketball',
-    'africa',
-    'league',
     'sports',
-    'ABL',
-    'african basketball',
-    'basketball africain',
+    'live scores',
+    'NBA stats',
+    'NBA standings',
+    'basketball scores',
   ],
-  authors: [{ name: 'African Basketball League' }],
+  authors: [{ name: 'NBA Stats Hub' }],
   openGraph: {
-    title: 'African Basketball League',
-    description: 'La première ligue professionnelle de basketball en Afrique',
+    title: 'NBA Stats & Scores - Live Basketball',
+    description: 'Suivez la NBA en direct avec scores, classements et statistiques',
     type: 'website',
     locale: 'fr_FR',
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" suppressHydrationWarning>
       <body className={`${inter.variable} ${bebasNeue.variable} font-sans antialiased`}>

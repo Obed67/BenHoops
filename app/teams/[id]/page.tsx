@@ -32,8 +32,8 @@ export async function generateMetadata({ params }: TeamPageProps): Promise<Metad
   }
 
   return {
-    title: `${team.name} - Basketball Africa League`,
-    description: `Découvrez l'équipe ${team.name} de ${team.city}, ${team.country}. Effectif, statistiques et prochains matchs.`,
+    title: `${team.name} - NBA`,
+    description: `Découvrez l'équipe NBA ${team.name} de ${team.city}. Effectif, statistiques et prochains matchs.`,
   };
 }
 

@@ -24,9 +24,7 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
             <div className="text-3xl">🏀</div>
-            <span className="text-xl font-bold tracking-tight">
-              African Basketball League
-            </span>
+            <span className="text-xl font-bold tracking-tight">NBA Stats</span>
           </Link>
 
           <div className="hidden items-center space-x-8 md:flex">
@@ -36,9 +34,7 @@ export function Navbar() {
                 href={link.href}
                 className={cn(
                   'text-sm font-medium transition-colors hover:text-primary',
-                  pathname === link.href
-                    ? 'text-foreground'
-                    : 'text-muted-foreground'
+                  pathname === link.href ? 'text-foreground' : 'text-muted-foreground'
                 )}
               >
                 {link.label}
@@ -75,9 +71,7 @@ export function Navbar() {
                   onClick={() => setIsOpen(false)}
                   className={cn(
                     'px-2 py-2 text-sm font-medium transition-colors',
-                    pathname === link.href
-                      ? 'text-foreground'
-                      : 'text-muted-foreground'
+                    pathname === link.href ? 'text-foreground' : 'text-muted-foreground'
                   )}
                 >
                   {link.label}

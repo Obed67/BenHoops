@@ -33,10 +33,10 @@ export default async function Home() {
               className="mb-6 text-5xl font-bold tracking-tight md:text-7xl"
               style={{ fontFamily: 'var(--font-bebas)' }}
             >
-              African Basketball League
+              NBA Stats & Live Scores
             </h1>
             <p className="mb-8 text-xl text-muted-foreground md:text-2xl">
-              La passion du basketball africain, l'excellence de la compétition professionnelle
+              Suivez la NBA en direct - Statistiques, classements et résultats en temps réel
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Link href="/schedule">

@@ -4,8 +4,8 @@ import { TeamCard } from '@/components/cards/team-card';
 import { REVALIDATE_TIME } from '@/lib/config/api';
 
 export const metadata: Metadata = {
-  title: 'Équipes - Basketball Africa League',
-  description: 'Découvrez toutes les équipes de la Basketball Africa League (BAL).',
+  title: 'Équipes - NBA',
+  description: 'Découvrez toutes les équipes de la NBA - 30 franchises professionnelles.',
 };
 
 // ISR - Revalidation toutes les 24 heures
@@ -25,7 +25,7 @@ export default async function TeamsPage() {
         </h1>
         <p className="text-xl text-muted-foreground">
           {teams.length > 0
-            ? `${teams.length} équipes professionnelles de la Basketball Africa League`
+            ? `${teams.length} équipes NBA - Conférence Est & Ouest`
             : 'Chargement des équipes...'}
         </p>
       </div>

@@ -11,10 +11,11 @@ export function Footer() {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <div className="text-3xl">🏀</div>
-              <span className="text-lg font-bold">ABL</span>
+              <span className="text-lg font-bold">NBA Stats</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              La première ligue professionnelle de basketball en Afrique, unissant les meilleures équipes du continent.
+              Suivez la NBA en direct avec statistiques, classements et résultats de toutes les
+              équipes.
             </p>
           </div>
 
@@ -22,22 +23,34 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold">Navigation</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Accueil
                 </Link>
               </li>
               <li>
-                <Link href="/teams" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/teams"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Équipes
                 </Link>
               </li>
               <li>
-                <Link href="/schedule" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/schedule"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Calendrier
                 </Link>
               </li>
               <li>
-                <Link href="/standings" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/standings"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Classement
                 </Link>
               </li>
@@ -48,22 +61,34 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold">À propos</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="#"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Notre histoire
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="#"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Règlement
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="#"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Partenaires
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="#"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Contact
                 </a>
               </li>
@@ -106,7 +131,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {currentYear} African Basketball League. Tous droits réservés.</p>
+          <p>&copy; {currentYear} NBA Stats Hub. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

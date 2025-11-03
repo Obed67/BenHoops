@@ -58,24 +58,27 @@ const client = new SportsDBClient();
 // ============================================
 
 /**
- * Récupère toutes les équipes de la Basketball Africa League
+ * Récupère toutes les équipes NBA
  */
-export async function getBALTeams(): Promise<Team[]> {
+export async function getNBATeams(): Promise<Team[]> {
   try {
     const leagueName = encodeURIComponent(SPORTSDB_CONFIG.leagueName);
     const data = await client.fetch<SportsDBTeamsResponse>(`search_all_teams.php?l=${leagueName}`);
 
     if (!data.teams || data.teams.length === 0) {
-      console.warn('Aucune équipe trouvée pour la BAL');
+      console.warn('Aucune équipe trouvée pour la NBA');
       return [];
     }
 
     return data.teams.map(normalizeTeam);
   } catch (error) {
-    console.error('Error fetching BAL teams:', error);
+    console.error('Error fetching NBA teams:', error);
     return [];
   }
 }
+
+// Alias pour compatibilité
+export const getBALTeams = getNBATeams;
 
 /**
  * Récupère une équipe spécifique par son ID
@@ -211,6 +214,33 @@ export async function getPastMatches(leagueId?: string): Promise<Match[]> {
     return data.events.map(normalizeMatch);
   } catch (error) {
     console.error('Error fetching past matches:', error);
+    return [];
+  }
+}
+
+/**
+ * Récupère tous les matchs NBA (passés + à venir)
+ */
+export async function getAllNBAMatches(season?: string): Promise<Match[]> {
+  try {
+    const leagueId = SPORTSDB_CONFIG.leagueId;
+    const currentSeason = season || '2024-2025';
+
+    // Récupérer les matchs de la saison
+    const data = await client.fetch<SportsDBEventsResponse>(
+      `eventsseason.php?id=${leagueId}&s=${currentSeason}`
+    );
+
+    if (!data.events || data.events.length === 0) {
+      console.warn(`Aucun match trouvé pour la saison ${currentSeason}`);
+      return [];
+    }
+
+    // Filtrer uniquement les matchs de basketball et normaliser
+    const basketballMatches = data.events.filter((event) => event.strSport === 'Basketball');
+    return basketballMatches.map(normalizeMatch);
+  } catch (error) {
+    console.error('Error fetching all NBA matches:', error);
     return [];
   }
 }

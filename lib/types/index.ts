@@ -1,4 +1,4 @@
-// Types pour l'API TheSportsDB - Basketball Africa League
+// Types pour l'API TheSportsDB - NBA (National Basketball Association)
 
 // ============================================
 // TYPES DE RÉPONSE API THESPORTSDB

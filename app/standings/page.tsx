@@ -13,8 +13,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 
 export const metadata: Metadata = {
-  title: 'Classement - Basketball Africa League',
-  description: 'Consultez le classement complet de la Basketball Africa League.',
+  title: 'Classement - NBA',
+  description: 'Consultez le classement complet de la NBA avec statistiques détaillées.',
 };
 
 // ISR - Revalidation toutes les heures

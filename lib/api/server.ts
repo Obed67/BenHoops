@@ -2,6 +2,7 @@
 
 import { REVALIDATE_TIME } from '@/lib/config/api';
 import type { Team, Player, Match } from '@/lib/types';
+import { getAllNBAMatches, getNBATeams } from '@/lib/api/sportsdb';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
@@ -177,25 +178,9 @@ export async function fetchMatchesByTeam(teamId: string, season?: string): Promi
  */
 export async function fetchAllMatches(): Promise<Match[]> {
   try {
-    const teams = await fetchTeams();
-
-    if (teams.length === 0) {
-      return [];
-    }
-
-    // Fetch les matchs pour chaque équipe en parallèle
-    const matchesPromises = teams.map((team) => fetchMatchesByTeam(team.id));
-    const allMatches = await Promise.all(matchesPromises);
-
-    // Fusionner et dédupliquer par ID
-    const matchesMap = new Map<string, Match>();
-    allMatches.flat().forEach((match) => {
-      if (!matchesMap.has(match.id)) {
-        matchesMap.set(match.id, match);
-      }
-    });
-
-    return Array.from(matchesMap.values());
+    // Utiliser directement l'API NBA pour récupérer tous les matchs
+    const matches = await getAllNBAMatches();
+    return matches;
   } catch (error) {
     console.error('Error fetching all matches:', error);
     return [];
@@ -248,14 +233,19 @@ export interface Standing {
  */
 export async function calculateStandings(): Promise<Standing[]> {
   try {
-    const [teams, matches] = await Promise.all([fetchTeams(), fetchAllMatches()]);
+    // Appeler directement l'API au lieu de passer par les endpoints pour éviter les dépendances circulaires
+    const [teams, matches] = await Promise.all([getNBATeams(), getAllNBAMatches()]);
 
     if (teams.length === 0) {
+      console.warn('Aucune équipe trouvée pour calculer le classement');
       return [];
     }
 
+    console.log(`Calcul du classement avec ${teams.length} équipes et ${matches.length} matchs`);
+
     // Filtrer uniquement les matchs terminés
     const finishedMatches = matches.filter((m) => m.status === 'finished');
+    console.log(`${finishedMatches.length} matchs terminés trouvés`);
 
     // Initialiser les stats pour chaque équipe
     const standings = new Map<string, Standing>();
