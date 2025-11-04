@@ -2,10 +2,12 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getNBATeams, getTeamById, getPlayersByTeam, getTeamMatches } from '@/lib/api/sportsdb';
 import Image from 'next/image';
+import Link from 'next/link';
 import { PlayerCard } from '@/components/cards/player-card';
 import { MatchCard } from '@/components/cards/match-card';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Users, Trophy, Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { MapPin, Users, Trophy, Calendar, ArrowLeft } from 'lucide-react';
 
 interface TeamPageProps {
   params: {
@@ -71,6 +73,16 @@ export default async function TeamPage({ params }: TeamPageProps) {
 
   return (
     <div className="container mx-auto px-4 py-12">
+      {/* Bouton retour */}
+      <div className="mb-6">
+        <Button variant="ghost" asChild>
+          <Link href="/teams" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Retour aux équipes
+          </Link>
+        </Button>
+      </div>
+
       {/* Hero Section avec fanart en arrière-plan */}
       <div className="mb-12 rounded-lg overflow-hidden relative min-h-[400px] flex items-center justify-center">
         {/* Image de fond (fanart ou banner) */}
@@ -236,7 +248,9 @@ export default async function TeamPage({ params }: TeamPageProps) {
           <Card>
             <CardContent className="p-6">
               <h2 className="text-2xl font-bold mb-4">À propos de {team.name}</h2>
-              <p className="text-muted-foreground leading-relaxed">{team.description}</p>
+              <p className="text-muted-foreground leading-relaxed line-clamp-6">
+                {team.description}
+              </p>
             </CardContent>
           </Card>
         </section>
