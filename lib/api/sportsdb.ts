@@ -21,8 +21,16 @@ function buildApiUrl(endpoint: string): string {
 }
 
 /**
+ * Délai pour éviter de dépasser les limites de l'API (429 Too Many Requests)
+ */
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
  * Fetch wrapper optimisé pour Next.js 14 Server Components
  * Utilise les options de cache natives de Next.js
+ * Inclut un délai pour éviter les erreurs 429
  */
 async function fetchFromAPI<T>(
   endpoint: string,
@@ -35,9 +43,12 @@ async function fetchFromAPI<T>(
   const url = buildApiUrl(endpoint);
 
   try {
+    // Petit délai pour éviter de surcharger l'API (100ms)
+    await delay(100);
+
     const response = await fetch(url, {
       next: {
-        revalidate: options?.revalidate,
+        revalidate: options?.revalidate ?? 3600, // Par défaut: 1 heure
         tags: options?.tags,
       },
       cache: options?.cache,

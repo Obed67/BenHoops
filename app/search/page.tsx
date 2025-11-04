@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   description: 'Recherchez des équipes, joueurs et matchs NBA.',
 };
 
+// Force dynamic rendering pour la page de recherche
+export const dynamic = 'force-dynamic';
+
 // ISR - Revalidation toutes les heures
 export const revalidate = 3600;
 

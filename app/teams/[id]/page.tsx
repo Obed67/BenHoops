@@ -29,13 +29,29 @@ export async function generateMetadata({ params }: TeamPageProps): Promise<Metad
   };
 }
 
-// SSG - Pré-générer les 30 pages d'équipes NBA
+// ISR - Revalidation toutes les heures
+export const revalidate = 3600;
+
+// SSG - Pré-générer seulement quelques équipes pour éviter l'erreur 429
+// Les autres équipes seront générées à la demande (ISR)
 export async function generateStaticParams() {
-  const teams = await getNBATeams();
-  return teams.map((team) => ({
-    id: team.id,
-  }));
+  try {
+    const teams = await getNBATeams();
+
+    // Ne pré-générer que les 5 premières équipes pour éviter l'erreur 429
+    const limitedTeams = teams.slice(0, 5);
+
+    return limitedTeams.map((team) => ({
+      id: team.id,
+    }));
+  } catch (error) {
+    console.error('Error in generateStaticParams:', error);
+    return [];
+  }
 }
+
+// Générer dynamiquement les pages qui ne sont pas pré-générées
+export const dynamicParams = true;
 
 export default async function TeamPage({ params }: TeamPageProps) {
   // Fetch parallèle pour optimiser les performances

@@ -27,14 +27,32 @@ interface MatchPageProps {
   };
 }
 
-// Générer les chemins statiques pour tous les matchs
+// Limiter le nombre de pages statiques générées pour éviter l'erreur 429
+// Génère uniquement les 5 derniers matchs pendant le build
+// Les autres matchs seront générés à la demande (ISR)
 export async function generateStaticParams() {
-  const matches = await getAllNBAMatches();
+  try {
+    const matches = await getAllNBAMatches();
 
-  return matches.map((match) => ({
-    id: match.id,
-  }));
+    // Ne pré-générer que les 5 derniers matchs pour éviter l'erreur 429
+    const recentMatches = matches
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 5);
+
+    return recentMatches.map((match) => ({
+      id: match.id,
+    }));
+  } catch (error) {
+    console.error('Error in generateStaticParams:', error);
+    return [];
+  }
 }
+
+// ISR - Revalidation toutes les heures
+export const revalidate = 3600;
+
+// Générer dynamiquement les pages qui ne sont pas pré-générées
+export const dynamicParams = true;
 
 export async function generateMetadata({ params }: MatchPageProps): Promise<Metadata> {
   const matches = await getAllNBAMatches();
