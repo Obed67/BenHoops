@@ -149,5 +149,10 @@ export function normalizeMatch(
     round: sportsDBEvent.intRound ? parseInt(sportsDBEvent.intRound, 10) : undefined,
     thumbnail: sportsDBEvent.strThumb || sportsDBEvent.strSquare,
     video: sportsDBEvent.strVideo,
+    official: sportsDBEvent.strOfficial,
+    tvStation: sportsDBEvent.strTVStation,
+    poster: sportsDBEvent.strPoster,
+    fanart: sportsDBEvent.strFanart,
+    banner: sportsDBEvent.strBanner,
   };
 }

@@ -234,6 +234,11 @@ export interface Match {
   round?: number;
   thumbnail?: string;
   video?: string;
+  official?: string;
+  tvStation?: string;
+  poster?: string;
+  fanart?: string;
+  banner?: string;
 }
 
 export interface Standing {
