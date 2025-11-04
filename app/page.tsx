@@ -128,31 +128,59 @@ export default async function Home() {
         <div className="absolute -bottom-1 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent"></div>
       </section>
 
-      <section className="py-16">
+      <section className="py-16 bg-gradient-to-b from-background to-orange-50/20 dark:to-orange-950/10">
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-3xl font-bold">Résultats récents</h2>
+            <div>
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 dark:from-orange-500 dark:via-red-500 dark:to-orange-500 bg-clip-text text-transparent">
+                Résultats récents
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">Les derniers matchs terminés</p>
+            </div>
             <Link href="/schedule">
-              <Button variant="ghost">
+              <Button
+                variant="ghost"
+                className="text-orange-600 dark:text-orange-500 hover:text-orange-700 dark:hover:text-orange-400 hover:bg-orange-500/10"
+              >
                 Voir tout
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {recentMatches.map((match) => (
-              <MatchCard key={match.id} match={match} />
-            ))}
+
+          {/* Carousel pour résultats récents */}
+          <div className="relative">
+            <div className="overflow-hidden">
+              <div className="flex gap-6 animate-scroll-slow hover:pause pb-4">
+                {recentMatches.concat(recentMatches).map((match, index) => (
+                  <div key={`${match.id}-${index}`} className="flex-shrink-0 w-[400px]">
+                    <MatchCard match={match} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Gradient edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent pointer-events-none"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent pointer-events-none"></div>
           </div>
         </div>
       </section>
 
-      <section className="border-t py-16 bg-muted/30">
+      <section className="border-t border-orange-200/20 dark:border-orange-900/20 py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-3xl font-bold">Prochains matchs</h2>
+            <div>
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 dark:from-orange-500 dark:via-red-500 dark:to-orange-500 bg-clip-text text-transparent">
+                Prochains matchs
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">Ne manquez aucun match à venir</p>
+            </div>
             <Link href="/schedule">
-              <Button variant="ghost">
+              <Button
+                variant="ghost"
+                className="text-orange-600 dark:text-orange-500 hover:text-orange-700 dark:hover:text-orange-400 hover:bg-orange-500/10"
+              >
                 Calendrier complet
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -166,12 +194,20 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="border-t py-16">
+      <section className="border-t border-orange-200/20 dark:border-orange-900/20 py-16">
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-3xl font-bold">Équipes en vedette</h2>
+            <div>
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 dark:from-orange-500 dark:via-red-500 dark:to-orange-500 bg-clip-text text-transparent">
+                Équipes en vedette
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">Découvrez les meilleures équipes</p>
+            </div>
             <Link href="/teams">
-              <Button variant="ghost">
+              <Button
+                variant="ghost"
+                className="text-orange-600 dark:text-orange-500 hover:text-orange-700 dark:hover:text-orange-400 hover:bg-orange-500/10"
+              >
                 Toutes les équipes
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

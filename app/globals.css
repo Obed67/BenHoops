@@ -116,6 +116,15 @@
     }
   }
 
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
   .animate-fade-in {
     animation: fade-in 0.8s ease-out forwards;
   }
@@ -128,6 +137,15 @@
   .animate-gradient {
     background-size: 200% 200%;
     animation: gradient 3s ease infinite;
+  }
+
+  .animate-scroll-slow {
+    animation: scroll 30s linear infinite;
+  }
+
+  .animate-scroll-slow:hover,
+  .pause {
+    animation-play-state: paused;
   }
 
   .delay-200 {

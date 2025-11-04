@@ -39,9 +39,11 @@ export default async function SchedulePage() {
 
         <TabsContent value="upcoming" className="space-y-6">
           {upcomingMatches.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="flex flex-wrap justify-center gap-6">
               {upcomingMatches.map((match) => (
-                <MatchCard key={match.id} match={match} />
+                <div key={match.id} className="w-[400px]">
+                  <MatchCard match={match} />
+                </div>
               ))}
             </div>
           ) : (
@@ -53,9 +55,11 @@ export default async function SchedulePage() {
 
         <TabsContent value="live" className="space-y-6">
           {liveMatches.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="flex flex-wrap justify-center gap-6">
               {liveMatches.map((match) => (
-                <MatchCard key={match.id} match={match} />
+                <div key={match.id} className="w-[400px]">
+                  <MatchCard match={match} />
+                </div>
               ))}
             </div>
           ) : (
@@ -67,9 +71,11 @@ export default async function SchedulePage() {
 
         <TabsContent value="finished" className="space-y-6">
           {finishedMatches.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="flex flex-wrap justify-center gap-6">
               {finishedMatches.map((match) => (
-                <MatchCard key={match.id} match={match} />
+                <div key={match.id} className="w-[400px]">
+                  <MatchCard match={match} />
+                </div>
               ))}
             </div>
           ) : (
