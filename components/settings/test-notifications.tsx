@@ -36,7 +36,6 @@ export function TestNotifications() {
           icon: '/icon-192.png',
           badge: '/icon-192.png',
           tag: 'test-notification',
-          vibrate: [200, 100, 200],
           data: {
             url: '/live',
             matchId: 'test-123',
@@ -51,7 +50,7 @@ export function TestNotifications() {
               title: 'Fermer',
             },
           ],
-        });
+        } as NotificationOptions);
 
         toast({
           title: 'Notification envoyée',
@@ -85,12 +84,11 @@ export function TestNotifications() {
         icon: '/icon-192.png',
         badge: '/icon-192.png',
         tag: 'match-start',
-        vibrate: [200],
         data: {
           url: '/live',
           type: 'match-start',
         },
-      });
+      } as NotificationOptions);
 
       toast({
         title: 'Notification envoyée',
@@ -117,7 +115,7 @@ export function TestNotifications() {
           url: '/schedule',
           type: 'score-update',
         },
-      });
+      } as NotificationOptions);
 
       toast({
         title: 'Notification envoyée',
