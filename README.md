@@ -8,6 +8,76 @@ Application web moderne pour suivre la NBA en temps réel. Statistiques, classem
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.3.3-38bdf8?logo=tailwind-css)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+---
+
+## 📋 Documentation Technique
+
+**→ [📄 Voir le Brief Technique Complet](./TECHNICAL_BRIEF.md)**
+
+_Document détaillant les défis rencontrés, optimisations implémentées et points d'amélioration futurs (2 pages)._
+
+---
+
+## 🚀 Démarrage Rapide
+
+### Prérequis
+
+- **Node.js** 18.x ou supérieur
+- **npm** ou **yarn** ou **pnpm**
+- Compte GitHub (pour déploiement Vercel)
+
+### Installation
+
+1. **Cloner le repository**
+
+```bash
+git clone https://github.com/Obed67/benhoops.git
+cd benhoops
+```
+
+2. **Installer les dépendances**
+
+```bash
+npm install
+# ou
+yarn install
+# ou
+pnpm install
+```
+
+3. **Configurer l'environnement** (optionnel)
+
+Créer `.env.local` (la clé par défaut fonctionne):
+
+```bash
+# Clé API TheSportsDB (gratuite: '3', limite 10 req/min)
+NEXT_PUBLIC_SPORTSDB_API_KEY=3
+
+# Base URL API
+NEXT_PUBLIC_SPORTSDB_BASE_URL=https://www.thesportsdb.com/api/v1/json
+
+# URL de l'application (production)
+NEXT_PUBLIC_BASE_URL=https://benhoops.vercel.app
+```
+
+4. **Lancer le serveur de développement**
+
+```bash
+npm run dev
+```
+
+Ouvrir [http://localhost:3000](http://localhost:3000) dans votre navigateur 🎉
+
+### Scripts Disponibles
+
+```bash
+npm run dev        # Serveur de développement (port 3000)
+npm run build      # Build production
+npm run start      # Démarrer en mode production
+npm run lint       # Linter le code
+npm run typecheck  # Vérifier les types TypeScript
+```
+
 ## ✨ Fonctionnalités
 
 ### 📋 Fonctionnalités Attendues
@@ -108,71 +178,11 @@ Application web moderne pour suivre la NBA en temps réel. Statistiques, classem
 - **Boutons dédiés** - Interface simple sur /schedule et /stats
 - **Données complètes** - Export de toutes les informations disponibles
 
-## 🚀 Démarrage Rapide
-
-### Prérequis
-
-- **Node.js** 18.x ou supérieur
-- **npm** ou **yarn** ou **pnpm**
-- Compte GitHub (pour déploiement Vercel)
-
-### Installation
-
-1. **Cloner le repository**
-
-```bash
-git clone https://github.com/Obed67/benhoops.git
-cd benhoops
-```
-
-2. **Installer les dépendances**
-
-```bash
-npm install
-# ou
-yarn install
-# ou
-pnpm install
-```
-
-3. **Configurer l'environnement** (optionnel)
-
-Créer `.env.local` (la clé par défaut fonctionne):
-
-```bash
-# Clé API TheSportsDB (gratuite: '3', limite 10 req/min)
-NEXT_PUBLIC_SPORTSDB_API_KEY=3
-
-# Base URL API
-NEXT_PUBLIC_SPORTSDB_BASE_URL=https://www.thesportsdb.com/api/v1/json
-
-# URL de l'application (production)
-NEXT_PUBLIC_BASE_URL=https://benhoops.vercel.app
-```
-
-4. **Lancer le serveur de développement**
-
-```bash
-npm run dev
-```
-
-Ouvrir [http://localhost:3000](http://localhost:3000) dans votre navigateur 🎉
-
-### Scripts Disponibles
-
-```bash
-npm run dev        # Serveur de développement (port 3000)
-npm run build      # Build production
-npm run start      # Démarrer en mode production
-npm run lint       # Linter le code
-npm run typecheck  # Vérifier les types TypeScript
-```
-
 ## 📁 Architecture du Projet
 
 ```
 benhoops/
-├── app/                          # Next.js 14 App Router
+├── app/                         # Next.js 14 App Router
 │   ├── layout.tsx               # Layout principal avec metadata
 │   ├── page.tsx                 # 🏠 Homepage - Hero + matchs récents + 780 joueurs
 │   ├── loading.tsx              # Loading state global
@@ -180,69 +190,74 @@ benhoops/
 │   ├── not-found.tsx            # Page 404 personnalisée
 │   │
 │   ├── teams/                   # 🏀 Section Équipes
-│   │   ├── page.tsx            # Liste des 30 équipes NBA (ISR 1h, pagination 12/page)
+│   │   ├── page.tsx             # Liste des 30 équipes NBA (ISR 1h, pagination 12/page)
 │   │   └── [id]/
 │   │       ├── page.tsx        # Profil équipe (ISR 1h)
 │   │       ├── loading.tsx     # Skeleton pour équipe
 │   │       └── error.tsx       # Error boundary équipe
 │   │
 │   ├── schedule/                # 📅 Calendrier
-│   │   └── page.tsx            # Matchs (pagination 9-12/page, export ICS + PDF)
+│   │   └── page.tsx             # Matchs (pagination 9-12/page, export ICS + PDF)
 │   │
 │   ├── standings/               # 📊 Classement
-│   │   └── page.tsx            # Est/Ouest avec stats (ISR 5min)
+│   │   └── page.tsx             # Est/Ouest avec stats (ISR 5min)
 │   │
-│   ├── stats/                   # 📈 Statistiques Avancées (NOUVEAU)
-│   │   └── page.tsx            # Graphiques Recharts + export CSV/JSON/PDF
+│   ├── stats/                   # 📈 Statistiques Avancées
+│   │   └── page.tsx             # Graphiques Recharts + export CSV/JSON/PDF
 │   │
 │   ├── live/                    # � Mode Live (NOUVEAU)
-│   │   └── page.tsx            # Auto-refresh 30s + pause/resume
+│   │   └── page.tsx             # Auto-refresh 30s + pause/resume
 │   │
 │   ├── settings/                # ⚙️ Paramètres PWA (NOUVEAU)
-│   │   └── page.tsx            # Gestion notifications push
+│   │   └── page.tsx             # Gestion notifications push
 │   │
 │   ├── search/                  # 🔍 Recherche
-│   │   └── page.tsx            # Équipes/joueurs/matchs (pagination 12/page)
+│   │   └── page.tsx             # Équipes/joueurs/matchs (pagination 12/page)
 │   │
-│   └── matches/[id]/            # 🏆 Détail Match
-│       └── page.tsx            # Détails d'un match spécifique
+│   └── matches/
+│   │   └── [id]/               # 🏆 Détail Match
+│   │       ├── page.tsx        # Détails d'un match spécifique
+│   │       ├── loading.tsx     # Skeleton pour match
+│   │       └── error.tsx       # Error boundary match
 │
 ├── components/                   # Composants React
 │   ├── cards/
-│   │   ├── match-card.tsx      # Card match avec scores
-│   │   ├── team-card.tsx       # Card équipe avec logo
-│   │   └── player-card.tsx     # Card joueur avec stats
+│   │   ├── match-card.tsx        # Card match avec scores
+│   │   ├── team-card.tsx         # Card équipe avec logo
+│   │   └── player-card.tsx       # Card joueur avec stats
+│   │   └── skeleton-cards.tsx    # Skeleton
 │   │
 │   ├── navigation/
 │   │   ├── navbar.tsx          # Navigation principale
 │   │   └── footer.tsx          # Footer avec liens (toutes les pages)
 │   │
 │   ├── stats/                   # 📈 Composants Stats (NOUVEAU)
-│   │   ├── league-overview.tsx # Vue d'ensemble ligue avec graphiques
-│   │   ├── team-comparison.tsx # Comparaison équipes (radar charts)
-│   │   └── top-performers.tsx  # Top équipes par victoires/points
+│   │   ├── league-overview.tsx  # Vue d'ensemble ligue avec graphiques
+│   │   ├── team-comparison.tsx  # Comparaison équipes (radar charts)
+│   │   └── top-performers.tsx   # Top équipes par victoires/points
 │   │
 │   ├── live/                    # 🔴 Composants Live (NOUVEAU)
-│   │   └── live-match-card.tsx # Card match avec refresh auto
+│   │   └── live-match-card.tsx  # Card match avec refresh auto
 │   │
-│   ├── export/                  # 📤 Export Données (NOUVEAU)
+│   ├── export/                          # 📤 Export Données (NOUVEAU)
 │   │   ├── schedule-export-buttons.tsx  # Export ICS + PDF calendrier
 │   │   └── stats-export-buttons.tsx     # Export CSV/JSON/PDF stats
 │   │
 │   ├── teams/                   # Composants équipes
-│   │   └── teams-grid.tsx      # Grille avec pagination (12/page)
+│   │   └── teams-grid.tsx       # Grille avec pagination (12/page)
 │   │
 │   ├── schedule/                # Composants calendrier
-│   │   └── matches-grid.tsx    # Grille matchs avec pagination (9-12/page)
+│   │   └── matches-grid.tsx     # Grille matchs avec pagination (9-12/page)
 │   │
-│   ├── search/                  # Composants recherche
-│   │   ├── search-input.tsx    # Input avec debounce
+│   ├── search/                      # Composants recherche
+│   │   ├── search-input.tsx         # Input avec debounce
 │   │   ├── teams-search-grid.tsx    # Résultats équipes (pagination)
 │   │   ├── players-search-grid.tsx  # Résultats joueurs (pagination)
 │   │   └── matches-search-grid.tsx  # Résultats matchs (pagination)
 │   │
-│   ├── settings/                # ⚙️ Composants Settings (NOUVEAU)
+│   ├── settings/                     # ⚙️ Composants Settings
 │   │   └── notification-settings.tsx # Gestion notifications PWA
+│   │   └── test-notifications.tsx    # Gestion notifications PWA
 │   │
 │   ├── loading/
 │   │   └── page-loading.tsx    # Loading component réutilisable
@@ -252,12 +267,13 @@ benhoops/
 │   │   ├── card.tsx
 │   │   ├── badge.tsx
 │   │   ├── tabs.tsx
-│   │   ├── pagination-custom.tsx    # Pagination réutilisable (NOUVEAU)
-│   │   └── ...                 # Accordion, Alert, Dialog, etc.
+│   │   ├── pagination-custom.tsx    # Pagination réutilisable
+│   │   └── ...                      # Accordion, Alert, Dialog, etc.
 │   │
 │   ├── theme-provider.tsx       # Provider dark mode
 │   ├── theme-toggle.tsx         # Toggle dark/light
-│   └── update-notifier.tsx      # Notification nouvelle version (NOUVEAU)
+│   └── update-notifier.tsx      # Notification nouvelle version
+│   └── search-input.tsx
 │
 ├── lib/                          # Logique métier
 │   ├── api/
@@ -277,11 +293,6 @@ benhoops/
 │   │
 │   └── utils.ts                 # Helpers (cn, formatters)
 │
-├── data/                         # Données statiques
-│   ├── teams.ts                 # Fallback teams si API fail
-│   ├── matches.ts               # Fallback matches
-│   └── standings.ts             # Fallback classement
-│
 ├── hooks/
 │   └── use-toast.ts             # Hook toast notifications
 │
@@ -294,7 +305,8 @@ benhoops/
 │   ├── grid.svg                 # Background pattern
 │   └── logos/                   # Logos locaux (vide)
 │
-├── .env.local                    # Variables d'environnement (gitignore)
+├── .env                         # Variables d'environnement (gitignore)
+├── .env.example                 # Variables d'environnement d'example
 ├── next.config.js               # Config Next.js + cache headers (MODIFIÉ)
 ├── tailwind.config.ts           # Config Tailwind + thème NBA
 ├── tsconfig.json                # Config TypeScript strict
@@ -421,95 +433,6 @@ colors: {
 - **Dark Mode** : Fond `#0A0A0A`, texte blanc
 - Transition automatique via `next-themes`
 
-## � API TheSportsDB
-
-### Variables d'Environnement
-
-`.env.local` (optionnel):
-
-````bash
-
-#### Flux de Données
-
-```mermaid
-graph TD
-    A[TheSportsDB API] -->|HTTP Request| B[lib/api/sportsdb.ts]
-    B -->|Memory Cache Check| C{Cache Hit?}
-    C -->|Yes| D[Return Cached Data]
-    C -->|No| E[Fetch from API + 500ms delay]
-    E -->|Normalize| F[transformers.ts]
-    F -->|Cache Result| G[Memory Cache]
-    F -->|Return| H[Server Components]
-    D -->|Return| H
-    H -->|Props| I[Client Components]
-    I -->|Render| J[Browser]
-````
-
-### Stratégie de Rendu (ISR + SSR)
-
-`.env.local` (optionnel):
-
-```bash
-# API TheSportsDB (clé gratuite par défaut: '3')
-NEXT_PUBLIC_SPORTSDB_API_KEY=3
-
-# Base URL API
-NEXT_PUBLIC_SPORTSDB_BASE_URL=https://www.thesportsdb.com/api/v1/json
-
-# URL de l'application
-NEXT_PUBLIC_BASE_URL=https://benhoops.vercel.app
-
-# Pour upgrade Patreon (optionnel)
-# NEXT_PUBLIC_SPORTSDB_API_KEY=votre_cle_patreon
-```
-
-### TypeScript Configuration
-
-`tsconfig.json` - **Strict Mode** activé:
-
-```json
-{
-  "compilerOptions": {
-    "strict": true, // Type safety maximal
-    "noEmit": true, // Pas de fichiers JS générés
-    "esModuleInterop": true, // Import ES modules
-    "moduleResolution": "bundler", // Résolution Next.js 13+
-    "paths": {
-      "@/*": ["./*"] // Imports absolus
-    }
-  }
-}
-```
-
-### Tailwind Configuration
-
-`tailwind.config.ts` - Thème NBA:
-
-```typescript
-export default {
-  darkMode: ['class'], // Dark mode avec class
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['var(--font-inter)'],
-        display: ['var(--font-bebas)'],
-      },
-      colors: {
-        primary: 'hsl(16 90% 55%)', // Orange NBA
-      },
-      keyframes: {
-        'fade-in': {
-          /* ... */
-        },
-        'slide-up': {
-          /* ... */
-        },
-      },
-    },
-  },
-};
-```
-
 ## 📊 API TheSportsDB
 
 ### Endpoints Utilisés
@@ -560,42 +483,6 @@ SportsDBEvent → Match {
 }
 ```
 
-## 🎯 Roadmap
-
-### Fonctionnalités Actuelles ✅
-
-- [x] Liste des 30 équipes NBA avec pagination (12/page)
-- [x] Profils équipes avec logo, stats, stade, joueurs
-- [x] Calendrier matchs avec pagination (9-12/page) et export (.ics, PDF)
-- [x] Classement Conférence Est/Ouest avec stats détaillées
-- [x] Recherche équipes, joueurs (780+), matchs avec pagination (12/page)
-- [x] **Stats avancées** - Graphiques interactifs (Recharts)
-- [x] **Mode live** - Auto-refresh 30s pour matchs en cours
-- [x] **PWA complet** - Notifications push, mode offline, installable
-- [x] **Export de données** - CSV, JSON, PDF, iCalendar (.ics)
-- [x] **Pagination intelligente** - Toutes les listes paginées
-- [x] **Cache management** - Service Worker v1.1.0 + headers intelligents
-- [x] **Auto-update** - Notification des nouvelles versions
-- [x] Dark mode avec transition fluide
-- [x] Loading states + error boundaries
-- [x] ISR + cache mémoire optimisé
-- [x] Responsive design mobile-first
-- [x] SEO metadata complet
-- [x] 780+ joueurs NBA disponibles
-
-### À Venir 🔜
-
-- [ ] **Analytics** - Suivi des performances d'équipes sur la saison
-- [ ] **Prédictions** - IA pour prédire résultats de matchs
-- [ ] **Favoris** - Sauvegarder équipes/joueurs favoris (localStorage)
-- [ ] **Notifications intelligentes** - Alertes personnalisées par équipe
-- [ ] **Comparaison multi-équipes** - Comparer 3+ équipes simultanément
-- [ ] **Filtres avancés** - Par conférence, division, période
-- [ ] **Internationalisation** - Support EN/FR/ES
-- [ ] **Tests** - Tests unitaires (Jest) + E2E (Playwright)
-- [ ] **Optimisation mobile** - PWA avancée avec background sync
-- [ ] **API custom** - Backend propre pour données augmentées
-
 ## 🤝 Contribution
 
 ### Guidelines
@@ -625,7 +512,6 @@ SportsDBEvent → Match {
 app/           → Pages Next.js (Server Components)
 components/    → Composants réutilisables
 lib/           → Logique métier + API
-data/          → Données statiques
 ```
 
 ---
@@ -646,7 +532,7 @@ MIT License - Voir [LICENSE](LICENSE)
 
 <div align="center">
 
-**Fait avec 🏀 par [Obed67](https://github.com/Obed67)**
+**Créé par [ObeDev](https://github.com/Obed67)**
 
 [🌐 Demo Live](https://benhoops.vercel.app) • [📖 Documentation](https://github.com/Obed67/benhoops) • [🐛 Report Bug](https://github.com/Obed67/benhoops/issues)
 
