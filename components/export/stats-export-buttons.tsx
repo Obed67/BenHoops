@@ -97,7 +97,7 @@ export function StatsExportButtons({ stats }: StatsExportButtonsProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleExportCSV} className="cursor-pointer">
           <Sheet className="mr-2 h-4 w-4" />
-          <span>CSV (Excel)</span>
+          <span>CSV</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleExportJSON} className="cursor-pointer">
           <FileJson className="mr-2 h-4 w-4" />
