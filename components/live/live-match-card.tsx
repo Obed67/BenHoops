@@ -20,15 +20,37 @@ export function LiveMatchCard({ match: initialMatch, autoRefresh = false }: Prop
   const [isPaused, setIsPaused] = useState(!autoRefresh);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
 
-  // Fonction pour rafraîchir les données du match
+  // Fonction pour rafraîchir les données du match depuis TheSportsDB API
   const refreshMatch = async () => {
     setIsRefreshing(true);
     try {
-      const response = await fetch(`/api/matches/${match.id}`);
+      // Appel direct à l'API TheSportsDB (pas de backend intermédiaire)
+      const apiKey = process.env.NEXT_PUBLIC_SPORTSDB_API_KEY || '3';
+      const response = await fetch(
+        `https://www.thesportsdb.com/api/v1/json/${apiKey}/lookupevent.php?id=${match.id}`
+      );
+
       if (response.ok) {
         const data = await response.json();
-        setMatch(data);
-        setLastUpdate(new Date());
+
+        // Vérifier si on a des données
+        if (data.events && data.events.length > 0) {
+          const eventData = data.events[0];
+
+          // Mettre à jour le match avec les nouvelles données
+          setMatch({
+            ...match,
+            homeScore: eventData.intHomeScore ? parseInt(eventData.intHomeScore) : null,
+            awayScore: eventData.intAwayScore ? parseInt(eventData.intAwayScore) : null,
+            status:
+              eventData.strStatus === 'Match Finished'
+                ? 'finished'
+                : eventData.strStatus === 'In Progress'
+                ? 'live'
+                : 'scheduled',
+          });
+          setLastUpdate(new Date());
+        }
       }
     } catch (error) {
       console.error('Erreur refresh match:', error);
