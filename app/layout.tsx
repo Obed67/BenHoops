@@ -66,7 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 window.addEventListener('load', function() {
                   navigator.serviceWorker.register('/sw.js').then(
                     function(registration) {
-                      console.log('SW registered: ', registration);
+                     
                     },
                     function(err) {
                       console.log('SW registration failed: ', err);
