@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
 import { getNBATeams, getAllNBAMatches, getAllNBAPlayers } from '@/lib/api/sportsdb';
-import { TeamCard } from '@/components/cards/team-card';
-import { MatchCard } from '@/components/cards/match-card';
-import { PlayerCard } from '@/components/cards/player-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SearchInput } from '@/components/search/search-input';
+import { TeamsSearchGrid } from '@/components/search/teams-search-grid';
+import { PlayersSearchGrid } from '@/components/search/players-search-grid';
+import { MatchesSearchGrid } from '@/components/search/matches-search-grid';
 import { Team, Match, Player } from '@/lib/types';
 
 export const metadata: Metadata = {
@@ -95,45 +95,15 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           </TabsList>
 
           <TabsContent value="teams">
-            {filteredTeams.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredTeams.map((team: Team) => (
-                  <TeamCard key={team.id} team={team} />
-                ))}
-              </div>
-            ) : (
-              <div className="py-12 text-center">
-                <p className="text-muted-foreground">Aucune équipe trouvée</p>
-              </div>
-            )}
+            <TeamsSearchGrid teams={filteredTeams} itemsPerPage={12} />
           </TabsContent>
 
           <TabsContent value="players">
-            {filteredPlayers.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredPlayers.map((player: Player) => (
-                  <PlayerCard key={player.id} player={player} />
-                ))}
-              </div>
-            ) : (
-              <div className="py-12 text-center">
-                <p className="text-muted-foreground">Aucun joueur trouvé</p>
-              </div>
-            )}
+            <PlayersSearchGrid players={filteredPlayers} itemsPerPage={12} />
           </TabsContent>
 
           <TabsContent value="matches">
-            {filteredMatches.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {filteredMatches.map((match: Match) => (
-                  <MatchCard key={match.id} match={match} />
-                ))}
-              </div>
-            ) : (
-              <div className="py-12 text-center">
-                <p className="text-muted-foreground">Aucun match trouvé</p>
-              </div>
-            )}
+            <MatchesSearchGrid matches={filteredMatches} itemsPerPage={9} />
           </TabsContent>
         </Tabs>
       ) : (

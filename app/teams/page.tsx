@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { getNBATeams } from '@/lib/api/sportsdb';
-import { TeamCard } from '@/components/cards/team-card';
+import { TeamsGrid } from '@/components/teams/teams-grid';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
@@ -51,11 +51,7 @@ export default async function TeamsPage() {
           </AlertDescription>
         </Alert>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {teams.map((team) => (
-            <TeamCard key={team.id} team={team} />
-          ))}
-        </div>
+        <TeamsGrid teams={teams} itemsPerPage={12} />
       )}
     </div>
   );

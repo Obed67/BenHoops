@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { getAllNBAMatches } from '@/lib/api/sportsdb';
-import { MatchCard } from '@/components/cards/match-card';
+import { MatchesGrid } from '@/components/schedule/matches-grid';
 import { ScheduleExportButtons } from '@/components/export/schedule-export-buttons';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -42,51 +42,15 @@ export default async function SchedulePage() {
         </TabsList>
 
         <TabsContent value="upcoming" className="space-y-6">
-          {upcomingMatches.length > 0 ? (
-            <div className="flex flex-wrap justify-center gap-6">
-              {upcomingMatches.map((match) => (
-                <div key={match.id} className="w-full sm:w-[400px]">
-                  <MatchCard match={match} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="py-12 text-center">
-              <p className="text-muted-foreground">Aucun match à venir pour le moment</p>
-            </div>
-          )}
+          <MatchesGrid matches={upcomingMatches} itemsPerPage={9} />
         </TabsContent>
 
         <TabsContent value="live" className="space-y-6">
-          {liveMatches.length > 0 ? (
-            <div className="flex flex-wrap justify-center gap-6">
-              {liveMatches.map((match) => (
-                <div key={match.id} className="w-full sm:w-[400px]">
-                  <MatchCard match={match} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="py-12 text-center">
-              <p className="text-muted-foreground">Aucun match en direct actuellement</p>
-            </div>
-          )}
+          <MatchesGrid matches={liveMatches} itemsPerPage={9} />
         </TabsContent>
 
         <TabsContent value="finished" className="space-y-6">
-          {finishedMatches.length > 0 ? (
-            <div className="flex flex-wrap justify-center gap-6">
-              {finishedMatches.map((match) => (
-                <div key={match.id} className="w-full sm:w-[400px]">
-                  <MatchCard match={match} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="py-12 text-center">
-              <p className="text-muted-foreground">Aucun match terminé</p>
-            </div>
-          )}
+          <MatchesGrid matches={finishedMatches} itemsPerPage={12} />
         </TabsContent>
       </Tabs>
     </div>
