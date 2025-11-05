@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getAllNBAMatches, getNBATeams } from '@/lib/api/sportsdb';
+import { getAllNBAMatches, getNBATeams, getAllNBAPlayers } from '@/lib/api/sportsdb';
 import { MatchCard } from '@/components/cards/match-card';
 import { TeamCard } from '@/components/cards/team-card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,11 @@ export const revalidate = 300;
 
 export default async function Home() {
   // Fetch parallèle avec ISR
-  const [matches, teams] = await Promise.all([getAllNBAMatches(), getNBATeams()]);
+  const [matches, teams, players] = await Promise.all([
+    getAllNBAMatches(),
+    getNBATeams(),
+    getAllNBAPlayers(),
+  ]);
 
   const recentMatches = matches.filter((m) => m.status === 'finished').slice(0, 3);
   const upcomingMatches = matches.filter((m) => m.status === 'scheduled').slice(0, 3);
@@ -114,7 +118,7 @@ export default async function Home() {
               </div>
               <div className="text-center p-4 rounded-xl bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-orange-200 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-lg hover:shadow-orange-200/50 dark:hover:shadow-none transition-all duration-300 hover:scale-105">
                 <div className="text-3xl md:text-4xl font-black text-orange-600 dark:text-orange-400 mb-1">
-                  500+
+                  {players.length}
                 </div>
                 <div className="text-xs md:text-sm text-slate-600 dark:text-gray-400 font-semibold">
                   JOUEURS
