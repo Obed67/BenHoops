@@ -9,7 +9,7 @@ Application web moderne pour suivre la NBA en temps réel. Statistiques, classem
 
 ## ✨ Fonctionnalités
 
-- 🏀 **30 Équipes NBA** - Logos, stats, profils complets
+- 🏀 **Équipes NBA** - Logos, stats, profils complets
 - 📊 **Classement en direct** - Conférence Est/Ouest avec statistiques
 - 📅 **Calendrier complet** - Matchs passés et à venir
 - 🔍 **Recherche avancée** - Équipes, joueurs et matchs
@@ -17,8 +17,6 @@ Application web moderne pour suivre la NBA en temps réel. Statistiques, classem
 - ⚡ **Performance optimale** - ISR + cache mémoire pour vitesse maximale
 - 📱 **Responsive Design** - Mobile-first avec Tailwind CSS
 - 🎨 **UI moderne** - shadcn/ui + Radix UI components
-
-## 🚀 Démarrage Rapide
 
 ## 🚀 Démarrage Rapide
 
@@ -52,8 +50,8 @@ pnpm install
 Créer `.env.local` (la clé par défaut fonctionne):
 
 ```bash
-# Clé API TheSportsDB (gratuite: '3', limite 10 req/min)
-NEXT_PUBLIC_SPORTSDB_API_KEY=3
+# Clé API TheSportsDB (gratuite: '123', limite 10 req/min)
+NEXT_PUBLIC_SPORTSDB_API_KEY=123
 
 # Base URL API
 NEXT_PUBLIC_SPORTSDB_BASE_URL=https://www.thesportsdb.com/api/v1/json
@@ -79,8 +77,6 @@ npm run typecheck  # Vérifier les types TypeScript
 
 ## 📁 Architecture du Projet
 
-## 📁 Architecture du Projet
-
 ```
 benhoops/
 ├── app/                          # Next.js 13 App Router
@@ -91,7 +87,7 @@ benhoops/
 │   ├── not-found.tsx            # Page 404 personnalisée
 │   │
 │   ├── teams/                   # 🏀 Section Équipes
-│   │   ├── page.tsx            # Liste des 30 équipes NBA (ISR 1h)
+│   │   ├── page.tsx            # Liste des équipes NBA (ISR 1h)
 │   │   └── [id]/
 │   │       ├── page.tsx        # Profil équipe (ISR 1h)
 │   │       ├── loading.tsx     # Skeleton pour équipe
@@ -172,7 +168,7 @@ benhoops/
 | Page          | Stratégie | Revalidation | Description                            |
 | ------------- | --------- | ------------ | -------------------------------------- |
 | `/`           | ISR       | 5 min        | Homepage avec matchs récents           |
-| `/teams`      | ISR       | 1 heure      | Liste des 30 équipes NBA               |
+| `/teams`      | ISR       | 1 heure      | Liste des équipes NBA                  |
 | `/teams/[id]` | ISR       | 1 heure      | Profil équipe (3 équipes pré-générées) |
 | `/schedule`   | ISR       | 1 heure      | Calendrier des matchs                  |
 | `/standings`  | ISR       | 5 min        | Classement mis à jour fréquemment      |
@@ -362,8 +358,6 @@ export default {
 
 ## 📊 API TheSportsDB
 
-## 📊 API TheSportsDB
-
 ### Endpoints Utilisés
 
 | Endpoint                 | Description             | Params               | Utilisé Pour           |
@@ -539,7 +533,7 @@ console.log('❌ [ERROR]:', error);
 
 ### Fonctionnalités Actuelles ✅
 
-- [x] Liste des 30 équipes NBA
+- [x] Liste des équipes NBA disponibles
 - [x] Profils équipes avec logo, stats, stade
 - [x] Calendrier matchs (passés + à venir)
 - [x] Classement Conférence Est/Ouest
