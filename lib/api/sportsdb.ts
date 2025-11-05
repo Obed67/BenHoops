@@ -186,7 +186,11 @@ export async function getPlayersByTeam(teamId: string): Promise<Player[]> {
   try {
     const data = await fetchFromAPI<SportsDBPlayersResponse>(
       `lookup_all_players.php?id=${teamId}`,
-      { cache: 'force-cache', tags: [`players-${teamId}`] } // SSG
+      {
+        cache: 'force-cache',
+        tags: [`players-${teamId}`],
+        useMemoryCache: true, // Cache mémoire pour éviter 429
+      }
     );
 
     if (!data.player || data.player.length === 0) {
@@ -220,6 +224,35 @@ export async function getPlayerById(playerId: string): Promise<Player | null> {
   } catch (error) {
     console.error(`Error fetching player ${playerId}:`, error);
     return null;
+  }
+}
+
+/**
+ * Récupère tous les joueurs de toutes les équipes NBA
+ * Utilise le cache mémoire pour éviter trop d'appels API
+ */
+export async function getAllNBAPlayers(): Promise<Player[]> {
+  try {
+    // Récupérer toutes les équipes d'abord
+    const teams = await getNBATeams();
+
+    if (teams.length === 0) {
+      console.warn('Aucune équipe trouvée pour récupérer les joueurs');
+      return [];
+    }
+
+    // Récupérer les joueurs de toutes les équipes en parallèle
+    const playersPromises = teams.map((team) => getPlayersByTeam(team.id));
+    const playersArrays = await Promise.all(playersPromises);
+
+    // Aplatir le tableau de tableaux en un seul tableau de joueurs
+    const allPlayers = playersArrays.flat();
+
+    console.log(`✅ ${allPlayers.length} joueurs NBA récupérés au total`);
+    return allPlayers;
+  } catch (error) {
+    console.error('Error fetching all NBA players:', error);
+    return [];
   }
 }
 

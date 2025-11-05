@@ -1,10 +1,11 @@
 import { Metadata } from 'next';
-import { getNBATeams, getAllNBAMatches } from '@/lib/api/sportsdb';
+import { getNBATeams, getAllNBAMatches, getAllNBAPlayers } from '@/lib/api/sportsdb';
 import { TeamCard } from '@/components/cards/team-card';
 import { MatchCard } from '@/components/cards/match-card';
+import { PlayerCard } from '@/components/cards/player-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SearchInput } from '@/components/search/search-input';
-import { Team, Match } from '@/lib/types';
+import { Team, Match, Player } from '@/lib/types';
 
 export const metadata: Metadata = {
   title: 'Recherche - NBA Stats',
@@ -26,7 +27,11 @@ interface SearchPageProps {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const query = searchParams.q?.toLowerCase() || '';
 
-  const [teams, matches] = await Promise.all([getNBATeams(), getAllNBAMatches()]);
+  const [teams, matches, players] = await Promise.all([
+    getNBATeams(),
+    getAllNBAMatches(),
+    getAllNBAPlayers(),
+  ]);
 
   // Filtrage côté serveur avec types appropriés
   const filteredTeams = query
@@ -47,7 +52,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       )
     : [];
 
-  const totalResults = filteredTeams.length + filteredMatches.length;
+  const filteredPlayers = query
+    ? players.filter(
+        (player: Player) =>
+          player.name.toLowerCase().includes(query) ||
+          player.position.toLowerCase().includes(query) ||
+          player.nationality.toLowerCase().includes(query)
+      )
+    : [];
+
+  const totalResults = filteredTeams.length + filteredMatches.length + filteredPlayers.length;
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -58,7 +72,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         >
           Recherche
         </h1>
-        <p className="text-xl text-muted-foreground">Recherchez des équipes et matchs NBA</p>
+        <p className="text-xl text-muted-foreground">
+          Recherchez des équipes, joueurs et matchs NBA
+        </p>
       </div>
 
       <div className="mx-auto mb-8 max-w-2xl">
@@ -72,8 +88,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
       {query ? (
         <Tabs defaultValue="teams" className="w-full">
-          <TabsList className="mb-8 grid w-full grid-cols-2 lg:w-[300px] lg:mx-auto">
+          <TabsList className="mb-8 grid w-full grid-cols-3 lg:w-[450px] lg:mx-auto">
             <TabsTrigger value="teams">Équipes ({filteredTeams.length})</TabsTrigger>
+            <TabsTrigger value="players">Joueurs ({filteredPlayers.length})</TabsTrigger>
             <TabsTrigger value="matches">Matchs ({filteredMatches.length})</TabsTrigger>
           </TabsList>
 
@@ -87,6 +104,20 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             ) : (
               <div className="py-12 text-center">
                 <p className="text-muted-foreground">Aucune équipe trouvée</p>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="players">
+            {filteredPlayers.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {filteredPlayers.map((player: Player) => (
+                  <PlayerCard key={player.id} player={player} />
+                ))}
+              </div>
+            ) : (
+              <div className="py-12 text-center">
+                <p className="text-muted-foreground">Aucun joueur trouvé</p>
               </div>
             )}
           </TabsContent>
