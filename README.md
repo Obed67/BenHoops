@@ -12,7 +12,7 @@ Application web moderne pour suivre la NBA en temps réel. Statistiques, classem
 
 ## 📋 Documentation Technique
 
-**→ [📄 Voir le Brief Technique Complet](./TECHNICAL_BRIEF.md)**
+**[Voir le Brief Technique Complet](./TECHNICAL_BRIEF.md)**
 
 _Document détaillant les défis rencontrés, optimisations implémentées et points d'amélioration futurs (2 pages)._
 
@@ -45,9 +45,9 @@ yarn install
 pnpm install
 ```
 
-3. **Configurer l'environnement** (optionnel)
+3. **Configurer l'environnement**
 
-Créer `.env.local` (la clé par défaut fonctionne):
+Créer `.env`:
 
 ```bash
 # Clé API TheSportsDB (gratuite: '3', limite 10 req/min)
