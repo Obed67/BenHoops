@@ -63,21 +63,53 @@ export function Footer() {
                   Classement
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/stats"
+                  className="text-muted-foreground hover:text-orange-600 dark:hover:text-orange-500 transition-colors"
+                >
+                  Statistiques
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/live"
+                  className="text-muted-foreground hover:text-orange-600 dark:hover:text-orange-500 transition-colors"
+                >
+                  Live
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* À propos */}
+          {/* Fonctionnalités */}
           <div>
             <h3 className="mb-4 text-sm font-bold text-orange-600 dark:text-orange-500">
-              À propos
+              Fonctionnalités
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
+                <Link
+                  href="/search"
+                  className="text-muted-foreground hover:text-orange-600 dark:hover:text-orange-500 transition-colors"
+                >
+                  Recherche
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/settings"
+                  className="text-muted-foreground hover:text-orange-600 dark:hover:text-orange-500 transition-colors"
+                >
+                  Paramètres
+                </Link>
+              </li>
+              <li>
                 <a
                   href="#"
                   className="text-muted-foreground hover:text-orange-600 dark:hover:text-orange-500 transition-colors"
                 >
-                  Notre histoire
+                  Notifications PWA
                 </a>
               </li>
               <li>
@@ -85,23 +117,7 @@ export function Footer() {
                   href="#"
                   className="text-muted-foreground hover:text-orange-600 dark:hover:text-orange-500 transition-colors"
                 >
-                  Règlement
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-muted-foreground hover:text-orange-600 dark:hover:text-orange-500 transition-colors"
-                >
-                  Partenaires
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-muted-foreground hover:text-orange-600 dark:hover:text-orange-500 transition-colors"
-                >
-                  Contact
+                  Export de données
                 </a>
               </li>
             </ul>
