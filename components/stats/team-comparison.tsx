@@ -29,6 +29,7 @@ import type { TeamStats } from '@/lib/utils/stats';
 import { calculateHeadToHead } from '@/lib/utils/stats';
 import { ArrowRight, Trophy, Target } from 'lucide-react';
 import Image from 'next/image';
+import { AnimatedSection, AnimatedGrid } from '@/components/animated-components';
 
 interface Props {
   teams: Team[];
@@ -114,53 +115,55 @@ export function TeamComparison({ teams, matches, teamStats }: Props) {
   return (
     <div className="space-y-6">
       {/* Team Selectors */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Sélectionner les équipes à comparer</CardTitle>
-          <CardDescription>
-            Choisissez deux équipes pour voir leurs statistiques côte à côte
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-            <Select value={team1Id} onValueChange={setTeam1Id}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {teams.map((team) => (
-                  <SelectItem key={team.id} value={team.id} disabled={team.id === team2Id}>
-                    {team.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+      <AnimatedSection animation="fadeUp" delay={0.1}>
+        <Card>
+          <CardHeader>
+            <CardTitle>Sélectionner les équipes à comparer</CardTitle>
+            <CardDescription>
+              Choisissez deux équipes pour voir leurs statistiques côte à côte
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+              <Select value={team1Id} onValueChange={setTeam1Id}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {teams.map((team) => (
+                    <SelectItem key={team.id} value={team.id} disabled={team.id === team2Id}>
+                      {team.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            <div className="flex justify-center">
-              <div className="p-2 bg-orange-500/10 rounded-full">
-                <ArrowRight className="h-6 w-6 text-orange-600" />
+              <div className="flex justify-center">
+                <div className="p-2 bg-orange-500/10 rounded-full">
+                  <ArrowRight className="h-6 w-6 text-orange-600" />
+                </div>
               </div>
-            </div>
 
-            <Select value={team2Id} onValueChange={setTeam2Id}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {teams.map((team) => (
-                  <SelectItem key={team.id} value={team.id} disabled={team.id === team1Id}>
-                    {team.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
+              <Select value={team2Id} onValueChange={setTeam2Id}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {teams.map((team) => (
+                    <SelectItem key={team.id} value={team.id} disabled={team.id === team1Id}>
+                      {team.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+      </AnimatedSection>
 
       {/* Team Headers */}
       {team1 && team2 && (
-        <div className="grid grid-cols-2 gap-4">
+        <AnimatedGrid variant="flip" stagger={0.2} className="grid grid-cols-2 gap-4">
           <Card>
             <CardContent className="pt-6">
               <div className="flex flex-col items-center space-y-3">
@@ -182,12 +185,13 @@ export function TeamComparison({ teams, matches, teamStats }: Props) {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </AnimatedGrid>
       )}
 
       {/* Radar Chart */}
       {stats1 && stats2 && (
-        <Card>
+        <AnimatedSection animation="fadeUp" delay={0.3}>
+          <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Target className="h-5 w-5" />
@@ -220,11 +224,13 @@ export function TeamComparison({ teams, matches, teamStats }: Props) {
             </ResponsiveContainer>
           </CardContent>
         </Card>
+        </AnimatedSection>
       )}
 
       {/* Stats Comparison */}
       {stats1 && stats2 && (
-        <Card>
+        <AnimatedSection animation="fadeLeft" delay={0.4}>
+          <Card>
           <CardHeader>
             <CardTitle>Statistiques Détaillées</CardTitle>
           </CardHeader>
@@ -276,11 +282,13 @@ export function TeamComparison({ teams, matches, teamStats }: Props) {
             </div>
           </CardContent>
         </Card>
+        </AnimatedSection>
       )}
 
       {/* Head to Head */}
       {h2h && h2h.totalMatches > 0 && (
-        <Card>
+        <AnimatedSection animation="fadeRight" delay={0.5}>
+          <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Trophy className="h-5 w-5 text-orange-600" />
@@ -332,6 +340,7 @@ export function TeamComparison({ teams, matches, teamStats }: Props) {
             )}
           </CardContent>
         </Card>
+        </AnimatedSection>
       )}
     </div>
   );

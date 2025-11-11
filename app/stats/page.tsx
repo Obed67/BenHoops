@@ -7,6 +7,7 @@ import { LeagueOverview } from '@/components/stats/league-overview';
 import { TeamComparison } from '@/components/stats/team-comparison';
 import { TopPerformers } from '@/components/stats/top-performers';
 import { StatsExportButtons } from '@/components/export/stats-export-buttons';
+import { AnimatedSection, AnimatedGrid } from '@/components/animated-components';
 
 // ISR - Revalidation toutes les heures
 export const revalidate = 3600;
@@ -31,29 +32,35 @@ export default async function StatsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
-      <div className="mb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg">
-              <BarChart3 className="h-8 w-8 text-white" />
+      <AnimatedSection animation="scale" delay={0.1}>
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg">
+                <BarChart3 className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl sm:text-4xl font-black tracking-tight bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 dark:from-orange-500 dark:via-red-500 dark:to-orange-500 bg-clip-text text-transparent">
+                  Statistiques NBA
+                </h1>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  Analyses avancées et comparaisons d'équipes
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tight bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 dark:from-orange-500 dark:via-red-500 dark:to-orange-500 bg-clip-text text-transparent">
-                Statistiques NBA
-              </h1>
-              <p className="text-sm sm:text-base text-muted-foreground">
-                Analyses avancées et comparaisons d'équipes
-              </p>
+            <div className="sm:self-start">
+              <StatsExportButtons stats={teamStats} />
             </div>
-          </div>
-          <div className="sm:self-start">
-            <StatsExportButtons stats={teamStats} />
           </div>
         </div>
-      </div>
+      </AnimatedSection>
 
       {/* Quick Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <AnimatedGrid
+        variant="zoom"
+        stagger={0.1}
+        className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8"
+      >
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -113,31 +120,37 @@ export default async function StatsPage() {
             </p>
           </CardContent>
         </Card>
-      </div>
+      </AnimatedGrid>
 
       {/* Main Content with Tabs */}
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 lg:w-[600px]">
-          <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
-          <TabsTrigger value="comparison">Comparaison</TabsTrigger>
-          <TabsTrigger value="performers">Top Performances</TabsTrigger>
-        </TabsList>
+      <AnimatedSection animation="fadeUp" delay={0.4}>
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3 lg:w-[600px]">
+            <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
+            <TabsTrigger value="comparison">Comparaison</TabsTrigger>
+            <TabsTrigger value="performers">Top Performances</TabsTrigger>
+          </TabsList>
 
-        {/* Vue d'ensemble de la ligue */}
-        <TabsContent value="overview" className="space-y-6">
-          <LeagueOverview leagueStats={leagueStats} topTeams={topTeams} bottomTeams={bottomTeams} />
-        </TabsContent>
+          {/* Vue d'ensemble de la ligue */}
+          <TabsContent value="overview" className="space-y-6">
+            <LeagueOverview
+              leagueStats={leagueStats}
+              topTeams={topTeams}
+              bottomTeams={bottomTeams}
+            />
+          </TabsContent>
 
-        {/* Comparaison d'équipes */}
-        <TabsContent value="comparison" className="space-y-6">
-          <TeamComparison teams={teams} matches={matches} teamStats={teamStats} />
-        </TabsContent>
+          {/* Comparaison d'équipes */}
+          <TabsContent value="comparison" className="space-y-6">
+            <TeamComparison teams={teams} matches={matches} teamStats={teamStats} />
+          </TabsContent>
 
-        {/* Top Performers */}
-        <TabsContent value="performers" className="space-y-6">
-          <TopPerformers teamStats={teamStats} matches={matches} />
-        </TabsContent>
-      </Tabs>
+          {/* Top Performers */}
+          <TabsContent value="performers" className="space-y-6">
+            <TopPerformers teamStats={teamStats} matches={matches} />
+          </TabsContent>
+        </Tabs>
+      </AnimatedSection>
     </div>
   );
 }

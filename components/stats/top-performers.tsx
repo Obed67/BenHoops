@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import type { TeamStats } from '@/lib/utils/stats';
 import type { Match } from '@/lib/types';
 import { Trophy, TrendingUp, Flame, Shield } from 'lucide-react';
+import { AnimatedGrid } from '@/components/animated-components';
 
 interface Props {
   teamStats: TeamStats[];
@@ -32,7 +33,7 @@ export function TopPerformers({ teamStats }: Props) {
     .slice(0, 5);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <AnimatedGrid variant="wave" stagger={0.12} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Best Offense */}
       <Card>
         <CardHeader>
@@ -229,6 +230,6 @@ export function TopPerformers({ teamStats }: Props) {
           )}
         </CardContent>
       </Card>
-    </div>
+    </AnimatedGrid>
   );
 }

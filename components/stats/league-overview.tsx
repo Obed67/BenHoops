@@ -16,6 +16,7 @@ import {
 } from 'recharts';
 import type { LeagueStats, TeamStats } from '@/lib/utils/stats';
 import { Trophy, TrendingDown } from 'lucide-react';
+import { AnimatedGrid } from '@/components/animated-components';
 
 interface Props {
   leagueStats: LeagueStats;
@@ -44,7 +45,7 @@ export function LeagueOverview({ leagueStats, topTeams, bottomTeams }: Props) {
   }));
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <AnimatedGrid variant="cascade" stagger={0.15} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Top Scorers */}
       <Card>
         <CardHeader>
@@ -200,6 +201,6 @@ export function LeagueOverview({ leagueStats, topTeams, bottomTeams }: Props) {
           )}
         </CardContent>
       </Card>
-    </div>
+    </AnimatedGrid>
   );
 }
