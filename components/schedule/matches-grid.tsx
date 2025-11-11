@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MatchCard } from '@/components/cards/match-card';
 import { Pagination } from '@/components/ui/pagination-custom';
+import { AnimatedGrid, AnimatedSection } from '@/components/animated-components';
 import type { Match } from '@/lib/types';
 
 interface MatchesGridProps {
@@ -12,6 +13,7 @@ interface MatchesGridProps {
 
 export function MatchesGrid({ matches, itemsPerPage = 9 }: MatchesGridProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [gridKey, setGridKey] = useState(0);
 
   const totalPages = Math.ceil(matches.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -20,8 +22,15 @@ export function MatchesGrid({ matches, itemsPerPage = 9 }: MatchesGridProps) {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    setGridKey((prev) => prev + 1); // Force re-animation
     window.scrollTo({ top: 200, behavior: 'smooth' });
   };
+
+  // Re-animate when matches change (tab switch)
+  useEffect(() => {
+    setGridKey((prev) => prev + 1);
+    setCurrentPage(1);
+  }, [matches.length]);
 
   if (matches.length === 0) {
     return (
@@ -34,15 +43,17 @@ export function MatchesGrid({ matches, itemsPerPage = 9 }: MatchesGridProps) {
   return (
     <div>
       <div className="flex flex-wrap justify-center gap-6">
-        {currentMatches.map((match) => (
-          <div key={match.id} className="w-full sm:w-[400px]">
-            <MatchCard match={match} />
-          </div>
-        ))}
+        <AnimatedGrid key={gridKey} variant="wave" stagger={0.06} className="contents">
+          {currentMatches.map((match) => (
+            <div key={match.id} className="w-full sm:w-[400px]">
+              <MatchCard match={match} />
+            </div>
+          ))}
+        </AnimatedGrid>
       </div>
 
       {totalPages > 1 && (
-        <>
+        <AnimatedSection animation="fadeUp" delay={0.3}>
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -52,7 +63,7 @@ export function MatchesGrid({ matches, itemsPerPage = 9 }: MatchesGridProps) {
             Affichage {startIndex + 1}-{Math.min(endIndex, matches.length)} sur {matches.length}{' '}
             matchs
           </div>
-        </>
+        </AnimatedSection>
       )}
     </div>
   );
