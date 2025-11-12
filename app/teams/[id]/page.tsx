@@ -63,10 +63,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
   const { id } = await params;
 
   // Fetch parallèle - ne plus charger les joueurs côté serveur
-  const [team, teamMatches] = await Promise.all([
-    getTeamById(id),
-    getTeamMatches(id),
-  ]);
+  const [team, teamMatches] = await Promise.all([getTeamById(id), getTeamMatches(id)]);
 
   if (!team) {
     notFound();

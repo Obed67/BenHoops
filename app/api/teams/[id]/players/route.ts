@@ -29,9 +29,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     );
   } catch (error) {
     console.error('[API] Error fetching players:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch players', players: [] },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch players', players: [] }, { status: 500 });
   }
 }

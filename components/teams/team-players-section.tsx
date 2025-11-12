@@ -23,7 +23,7 @@ export function TeamPlayersSection({ teamId, teamName }: TeamPlayersSectionProps
 
         // Appeler une route API côté client
         const response = await fetch(`/api/teams/${teamId}/players`);
-        
+
         if (!response.ok) {
           throw new Error('Erreur lors du chargement des joueurs');
         }
