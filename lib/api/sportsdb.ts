@@ -223,11 +223,13 @@ export async function getPlayersByTeam(teamId: string): Promise<Player[]> {
     const url = `${NBA_API_CONFIG.baseUrl}/commonteamroster?Season=${NBA_API_CONFIG.season}&TeamID=${nbaTeamId}`;
 
     const maxRetries = 3;
-    
+
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        console.log(`🔄 [getPlayersByTeam] Tentative ${attempt}/${maxRetries} pour l'équipe ${nbaTeamId}`);
-        
+        console.log(
+          `🔄 [getPlayersByTeam] Tentative ${attempt}/${maxRetries} pour l'équipe ${nbaTeamId}`
+        );
+
         await delay(100 * attempt); // Délai progressif
 
         // Créer un AbortController pour le timeout
@@ -239,7 +241,7 @@ export async function getPlayersByTeam(teamId: string): Promise<Player[]> {
             ...NBA_API_CONFIG.headers,
             // Headers additionnels pour éviter le blocage
             'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache',
+            Pragma: 'no-cache',
           } as HeadersInit,
           signal: controller.signal,
           next: { revalidate: 43200 }, // Cache 12 heures
@@ -248,8 +250,10 @@ export async function getPlayersByTeam(teamId: string): Promise<Player[]> {
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-          console.error(`❌ [getPlayersByTeam] NBA API Error: ${response.status} ${response.statusText} for team ${nbaTeamId}`);
-          
+          console.error(
+            `❌ [getPlayersByTeam] NBA API Error: ${response.status} ${response.statusText} for team ${nbaTeamId}`
+          );
+
           // Retry sur erreurs 5xx ou 429
           if ((response.status >= 500 || response.status === 429) && attempt < maxRetries) {
             await delay(1000 * attempt);
@@ -289,7 +293,9 @@ export async function getPlayersByTeam(teamId: string): Promise<Player[]> {
         return players;
       } catch (fetchError: any) {
         if (fetchError.name === 'AbortError') {
-          console.warn(`⏱️  [getPlayersByTeam] Timeout (tentative ${attempt}/${maxRetries}) pour l'équipe ${nbaTeamId}`);
+          console.warn(
+            `⏱️  [getPlayersByTeam] Timeout (tentative ${attempt}/${maxRetries}) pour l'équipe ${nbaTeamId}`
+          );
         } else {
           console.error(`❌ [getPlayersByTeam] Erreur (tentative ${attempt}/${maxRetries}):`, {
             team: nbaTeamId,
