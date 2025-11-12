@@ -1,14 +1,14 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getNBATeams, getTeamById, getPlayersByTeam, getTeamMatches } from '@/lib/api/sportsdb';
+import { getNBATeams, getTeamById, getTeamMatches } from '@/lib/api/sportsdb';
 import Image from 'next/image';
 import Link from 'next/link';
-import { PlayerCard } from '@/components/cards/player-card';
 import { MatchCard } from '@/components/cards/match-card';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ExpandableText } from '@/components/ui/expandable-text';
 import { MapPin, Users, Trophy, Calendar, ArrowLeft } from 'lucide-react';
+import { TeamPlayersSection } from '@/components/teams/team-players-section';
 
 interface TeamPageProps {
   params: Promise<{
@@ -62,10 +62,9 @@ export default async function TeamPage({ params }: TeamPageProps) {
   // Attendre les params (Next.js 15+)
   const { id } = await params;
 
-  // Fetch parallèle pour optimiser les performances
-  const [team, teamPlayers, teamMatches] = await Promise.all([
+  // Fetch parallèle - ne plus charger les joueurs côté serveur
+  const [team, teamMatches] = await Promise.all([
     getTeamById(id),
-    getPlayersByTeam(id),
     getTeamMatches(id),
   ]);
 
@@ -259,14 +258,8 @@ export default async function TeamPage({ params }: TeamPageProps) {
         </section>
       )}
 
-      <section className="mb-12">
-        <h2 className="mb-6 text-3xl font-bold">Effectif</h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {teamPlayers.map((player) => (
-            <PlayerCard key={player.id} player={player} />
-          ))}
-        </div>
-      </section>
+      {/* Chargement des joueurs côté client pour éviter les timeouts */}
+      <TeamPlayersSection teamId={id} teamName={team.name} />
 
       {teamMatches.length > 0 && (
         <section>
