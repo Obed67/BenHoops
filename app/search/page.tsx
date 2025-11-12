@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getNBATeams, getAllNBAMatches, getAllNBAPlayers } from '@/lib/api/sportsdb';
+import { getNBATeams, getAllNBAMatches } from '@/lib/api/sportsdb';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SearchInput } from '@/components/search/search-input';
 import { TeamsSearchGrid } from '@/components/search/teams-search-grid';
@@ -27,11 +27,14 @@ interface SearchPageProps {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const query = searchParams.q?.toLowerCase() || '';
 
-  const [teams, matches, players] = await Promise.all([
+  // Charger seulement les données nécessaires pour éviter les timeouts au build
+  const [teams, matches] = await Promise.all([
     getNBATeams(),
     getAllNBAMatches(),
-    getAllNBAPlayers(),
   ]);
+  
+  // Les joueurs ne sont chargés que si nécessaire (évite timeout au build)
+  const players: Player[] = [];
 
   // Filtrage côté serveur avec types appropriés
   const filteredTeams = query

@@ -224,45 +224,63 @@ export async function getPlayersByTeam(teamId: string): Promise<Player[]> {
 
     await delay(100); // Petit délai pour éviter rate limiting
 
-    const response = await fetch(url, {
-      headers: NBA_API_CONFIG.headers,
-      next: { revalidate: 43200 }, // Cache 12 heures
-    });
+    // Créer un AbortController pour le timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), NBA_API_CONFIG.timeout);
 
-    if (!response.ok) {
-      console.error(`NBA API Error: ${response.status} for team ${nbaTeamId}`);
+    try {
+      const response = await fetch(url, {
+        headers: NBA_API_CONFIG.headers as HeadersInit,
+        signal: controller.signal,
+        next: { revalidate: 43200 }, // Cache 12 heures
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        console.error(`NBA API Error: ${response.status} for team ${nbaTeamId}`);
+        return [];
+      }
+
+      const data = await response.json();
+
+      // L'API NBA retourne les données dans resultSets[0].rowSet
+      if (!data.resultSets || !data.resultSets[0] || !data.resultSets[0].rowSet) {
+        console.warn(`Aucun joueur trouvé pour l'équipe ${nbaTeamId}`);
+        return [];
+      }
+
+      // Mapper les données de l'API NBA vers notre format Player
+      const players: Player[] = data.resultSets[0].rowSet.map((row: any[]) => ({
+        id: row[14]?.toString() || '', // PLAYER_ID à l'index 14
+        name: row[3] || 'Unknown', // PLAYER à l'index 3
+        teamId: teamId, // Garder l'ID TheSportsDB pour la compatibilité
+        teamName: '', // Sera rempli par le composant si besoin
+        position: row[7] || 'N/A', // POSITION à l'index 7
+        height: row[8] || '', // HEIGHT à l'index 8
+        weight: row[9] ? `${row[9]} lbs` : '', // WEIGHT à l'index 9
+        nationality: 'USA', // Par défaut (non fourni par cet endpoint)
+        dateOfBirth: row[10] || '', // BIRTH_DATE à l'index 10
+        college: row[13] || '', // SCHOOL à l'index 13
+        imageUrl: `https://cdn.nba.com/headshots/nba/latest/1040x760/${row[14]}.png`,
+        cutout: `https://cdn.nba.com/headshots/nba/latest/1040x760/${row[14]}.png`,
+        description: '',
+      }));
+
+      console.log(
+        `✅ Récupéré ${players.length} joueurs pour l'équipe ${teamId} (NBA ID: ${nbaTeamId})`
+      );
+      return players;
+    } catch (fetchError: any) {
+      clearTimeout(timeoutId);
+      
+      if (fetchError.name === 'AbortError') {
+        console.warn(`⏱️  Timeout lors de la récupération des joueurs pour l'équipe ${nbaTeamId}`);
+      } else {
+        console.error(`Erreur fetch pour l'équipe ${nbaTeamId}:`, fetchError.message);
+      }
       return [];
     }
-
-    const data = await response.json();
-
-    // L'API NBA retourne les données dans resultSets[0].rowSet
-    if (!data.resultSets || !data.resultSets[0] || !data.resultSets[0].rowSet) {
-      console.warn(`Aucun joueur trouvé pour l'équipe ${nbaTeamId}`);
-      return [];
-    }
-
-    // Mapper les données de l'API NBA vers notre format Player
-    const players: Player[] = data.resultSets[0].rowSet.map((row: any[]) => ({
-      id: row[14]?.toString() || '', // PLAYER_ID à l'index 14
-      name: row[3] || 'Unknown', // PLAYER à l'index 3
-      teamId: teamId, // Garder l'ID TheSportsDB pour la compatibilité
-      teamName: '', // Sera rempli par le composant si besoin
-      position: row[7] || 'N/A', // POSITION à l'index 7
-      height: row[8] || '', // HEIGHT à l'index 8
-      weight: row[9] ? `${row[9]} lbs` : '', // WEIGHT à l'index 9
-      nationality: 'USA', // Par défaut (non fourni par cet endpoint)
-      dateOfBirth: row[10] || '', // BIRTH_DATE à l'index 10
-      college: row[13] || '', // SCHOOL à l'index 13
-      imageUrl: `https://cdn.nba.com/headshots/nba/latest/1040x760/${row[14]}.png`,
-      cutout: `https://cdn.nba.com/headshots/nba/latest/1040x760/${row[14]}.png`,
-      description: '',
-    }));
-
-    console.log(
-      `✅ Récupéré ${players.length} joueurs pour l'équipe ${teamId} (NBA ID: ${nbaTeamId})`
-    );
-    return players;
   } catch (error) {
     console.error(`Error fetching players for team ${teamId}:`, error);
     return [];

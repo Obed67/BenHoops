@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getAllNBAMatches, getNBATeams, getAllNBAPlayers } from '@/lib/api/sportsdb';
+import { getAllNBAMatches, getNBATeams } from '@/lib/api/sportsdb';
 import { MatchCard } from '@/components/cards/match-card';
 import { TeamCard } from '@/components/cards/team-card';
 import { Button } from '@/components/ui/button';
@@ -11,11 +11,10 @@ import { AnimatedSection, AnimatedGrid } from '@/components/animated-components'
 export const revalidate = 300;
 
 export default async function Home() {
-  // Fetch parallèle avec ISR
-  const [matches, teams, players] = await Promise.all([
+  // Fetch parallèle avec ISR - pas besoin de tous les joueurs sur la page d'accueil
+  const [matches, teams] = await Promise.all([
     getAllNBAMatches(),
     getNBATeams(),
-    getAllNBAPlayers(),
   ]);
 
   const recentMatches = matches.filter((m) => m.status === 'finished').slice(0, 3);
